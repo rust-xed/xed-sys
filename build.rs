@@ -68,7 +68,7 @@ fn build_bindings() {
         let dot_h = job.0;
         let dot_rs = job.1;
         let bindings = match bindgen::Builder::default()
-            .clang_arg("--include-directory=xed/build/obj")
+            .clang_arg("--include-directory=xed/obj")
             .clang_arg("--include-directory=xed/include/public/xed")
             .header(dot_h)
             .generate() {
@@ -126,7 +126,7 @@ fn main() -> Result<(), Box<Error>> {
 
     // Build the project
     let output = Command::new("python")
-        .arg("../mfile.py")
+        .arg("mfile.py")
         .arg(format!("--jobs={}", num_cpus::get()))
         .arg("--silent")
         .arg("--static-stripped")
@@ -140,7 +140,7 @@ fn main() -> Result<(), Box<Error>> {
         //.arg("--yasm")
         //.arg("--linker=/usr/bin/ld")
         //.arg("--compiler=clang")
-        .current_dir("xed/build")
+        .current_dir("xed")
         .output();
     handle_err(output, "Failed to run `mfile.py`");
 

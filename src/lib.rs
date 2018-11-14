@@ -17,7 +17,6 @@
     unused_parens,
     unused_unsafe,
     no_mangle_const_items,
-    private_no_mangle_fns,
     non_upper_case_globals,
     unreachable_code)]
 
