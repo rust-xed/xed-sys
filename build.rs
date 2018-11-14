@@ -122,6 +122,8 @@ fn main() -> Result<(), Box<Error>> {
     new_dir.pop();
     env::set_current_dir(new_dir.clone())?;
 
+    eprintln!("NewDir: {:?}", new_dir);
+
     // Build the project
     let output = Command::new("python")
         .arg("../mfile.py")
