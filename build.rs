@@ -2,6 +2,9 @@
 extern crate bindgen;
 extern crate fs_extra;
 extern crate num_cpus;
+extern crate target_lexicon;
+#[cfg(target = "msvc")]
+extern crate vswhere;
 
 use std::process::{Command,Output};
 use std::io;
@@ -9,9 +12,12 @@ use std::env;
 use std::fs;
 use std::path::{self, Path};
 use std::error::Error;
+use std::str::FromStr;
 
 use fs_extra::dir;
 use fs_extra::error::Result as FsResult;
+
+use target_lexicon::Triple;
 
 /// Prints stuff about error
 fn handle_err<A: AsRef<str>>(o: io::Result<Output>, cmd: A) -> Output {
@@ -82,9 +88,36 @@ fn build_bindings() {
     }
 }
 
+#[cfg(target_env = "msvc")]
+fn add_msvc_arg(cmd: &mut Command) -> Result<&mut Command, Box<Error>> {
+    let instinfos = vswhere::Config::new()
+        .run_default_path()?;
+
+    for inst in instinfos {
+        if inst.installation_version().major() == 15 {
+            let mut path = inst.installation_path();
+            return Ok(
+                cmd.arg(
+                    format!("--vc-dir={}", path.join("VC").to_str().unwrap())
+                )
+            );
+        }
+    }
+
+    println!("cargo:warning=Unable to find a non-preview version of MSVC, this may cause compilation failures.");
+
+    Ok(cmd)
+}
+#[cfg(not(target_env = "msvc"))]
+fn add_msvc_arg(cmd: &mut Command) -> Result<&mut Command, Box<Error>> {
+    Ok(cmd)
+}
+
 /// Build script entry point
 fn main() -> Result<(), Box<Error>> {
     let out_dir = env::var("OUT_DIR").unwrap();
+    let triple = Triple::from_str(&env::var("TARGET").unwrap()).unwrap();
+    eprintln!("{:?}", triple);
    
     // linker directory
     let current_dir = env::current_dir().expect("Could not fetch current directory");
@@ -108,38 +141,40 @@ fn main() -> Result<(), Box<Error>> {
 
     let mut new_dir = path::PathBuf::from(&out_dir);
     new_dir.push("xed-build");
-    dir::remove(new_dir.clone()).err();
+    //dir::remove(new_dir.clone()).err();
     create_dir(new_dir.clone())?;
 
     new_dir.push("mbuild");
-    eprintln!("{:?}", new_dir);
-    overwrite_dir(mbuild_dir, new_dir.clone())?;
+    if !new_dir.exists() {
+        overwrite_dir(mbuild_dir, new_dir.clone())?;
+    }
 
     new_dir.pop();
     new_dir.push("xed");
-    overwrite_dir(xed_dir, new_dir.clone())?;
+    if !new_dir.exists() {
+        overwrite_dir(xed_dir, new_dir.clone())?;
+    }
     
     new_dir.pop();
     env::set_current_dir(new_dir.clone())?;
 
-    eprintln!("NewDir: {:?}", new_dir);
+    // Ignore changes in all other files except build.rs
+    println!("cargo:rerun-if-changed=build.rs");
 
     // Build the project
-    let output = Command::new("python")
-        .arg("mfile.py")
+    let output = 
+        add_msvc_arg(
+            Command::new("python")
+                .arg("mfile.py")
+        )?
         .arg(format!("--jobs={}", num_cpus::get()))
         .arg("--silent")
         .arg("--static-stripped")
         //.arg("--extra-ccflags=-fPIC")
         .arg("--opt=3")
         .arg("--no-werror")
-        //.arg("--elf-dwarf")
-        //.arg("--cc=/usr/bin/clang")
-        //.arg("--cxx=/usr/bin/clang++")
-        //.arg("--ar=/usr/bin/ar")
-        //.arg("--yasm")
-        //.arg("--linker=/usr/bin/ld")
-        //.arg("--compiler=clang")
+        //.arg(format!("--toolchain={}", toolchain))
+        .arg(format!("--host-cpu={}", triple.architecture))
         .current_dir("xed")
         .output();
     handle_err(output, "Failed to run `mfile.py`");

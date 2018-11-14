@@ -5,9 +5,11 @@ authors = ["Phantomical"]
 publish = false
 
 [dependencies]
+vswhere = "*"
 
 [build-dependencies]
 bindgen = "0.43"
 fs_extra = "1.1"
 num_cpus = "1.8"
-
+target-lexicon = "0.2"
+vswhere = "0.1"
