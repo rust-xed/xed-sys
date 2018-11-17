@@ -1,17 +1,16 @@
-
 extern crate bindgen;
 extern crate fs_extra;
 extern crate num_cpus;
 extern crate target_lexicon;
-#[cfg(target = "msvc")]
+#[cfg(target_env = "msvc")]
 extern crate vswhere;
 
-use std::process::{Command,Output};
-use std::io;
 use std::env;
-use std::fs;
-use std::path::{self, Path};
 use std::error::Error;
+use std::fs;
+use std::io;
+use std::path::{self, Path};
+use std::process::{Command, Output};
 use std::str::FromStr;
 
 use fs_extra::dir;
@@ -24,10 +23,10 @@ fn handle_err<A: AsRef<str>>(o: io::Result<Output>, cmd: A) -> Output {
     let o = match o {
         Err(e) => {
             println!("{}", cmd.as_ref());
-            println!("\tIO Error on exec:\n{:?}",e);
+            println!("\tIO Error on exec:\n{:?}", e);
             ::std::process::exit(1);
         }
-        Ok(o) => o 
+        Ok(o) => o,
     };
     if !o.status.success() {
         let stderr = String::from_utf8_lossy(o.stderr.as_slice());
@@ -45,7 +44,10 @@ fn handle_err<A: AsRef<str>>(o: io::Result<Output>, cmd: A) -> Output {
 }
 
 const BINDGEN_JOBS: &'static [(&'static str, &'static str)] = &[
-    ("xed/include/public/xed/xed-interface.h", "../xed_interface.rs"),
+    (
+        "xed/include/public/xed/xed-interface.h",
+        "../xed_interface.rs",
+    ),
     ("xed/include/public/xed/xed-version.h", "../xed_version.rs"),
 ];
 
@@ -53,19 +55,23 @@ fn create_dir<P: AsRef<Path>>(path: P) -> io::Result<()> {
     match fs::create_dir(path) {
         Err(e) => match e.kind() {
             io::ErrorKind::AlreadyExists => Ok(()),
-            _ => Err(e)
+            _ => Err(e),
         },
         x => x,
     }
 }
 
 fn overwrite_dir<P1: AsRef<Path>, P2: AsRef<Path>>(src: P1, dest: P2) -> FsResult<u64> {
-    dir::copy(src, dest, &dir::CopyOptions{
-        overwrite: true,
-        skip_exist: true,
-        copy_inside: true,
-        ..dir::CopyOptions::new()
-    })
+    dir::copy(
+        src,
+        dest,
+        &dir::CopyOptions {
+            overwrite: true,
+            skip_exist: true,
+            copy_inside: true,
+            ..dir::CopyOptions::new()
+        },
+    )
 }
 
 /// Autogenerates bindings
@@ -76,31 +82,33 @@ fn build_bindings() {
         let bindings = match bindgen::Builder::default()
             .clang_arg("--include-directory=xed/obj")
             .clang_arg("--include-directory=xed/include/public/xed")
+            .clang_arg("-DXED_ENCODER")
             .header(dot_h)
-            .generate() {
+            .generate()
+        {
             Ok(x) => x,
-            Err(e) => panic!("Could not generate bindings for {}. Error {:?}", dot_h, e)
+            Err(e) => panic!("Could not generate bindings for {}. Error {:?}", dot_h, e),
         };
         match bindings.write_to_file(dot_rs) {
             Ok(_) => {}
-            Err(e) => panic!("Could not write generated bindings to {}. Error {:?}", dot_rs, e)
+            Err(e) => panic!(
+                "Could not write generated bindings to {}. Error {:?}",
+                dot_rs, e
+            ),
         };
     }
 }
 
 #[cfg(target_env = "msvc")]
 fn add_msvc_arg(cmd: &mut Command) -> Result<&mut Command, Box<Error>> {
-    let instinfos = vswhere::Config::new()
-        .run_default_path()?;
+    // Should include preview versions in this but vswhere
+    // currently panics on those
+    let instinfos = vswhere::Config::new().run_default_path()?;
 
     for inst in instinfos {
         if inst.installation_version().major() == 15 {
             let mut path = inst.installation_path();
-            return Ok(
-                cmd.arg(
-                    format!("--vc-dir={}", path.join("VC").to_str().unwrap())
-                )
-            );
+            return Ok(cmd.arg(format!("--vc-dir={}", path.join("VC").to_str().unwrap())));
         }
     }
 
@@ -117,8 +125,7 @@ fn add_msvc_arg(cmd: &mut Command) -> Result<&mut Command, Box<Error>> {
 fn main() -> Result<(), Box<Error>> {
     let out_dir = env::var("OUT_DIR").unwrap();
     let triple = Triple::from_str(&env::var("TARGET").unwrap()).unwrap();
-    eprintln!("{:?}", triple);
-   
+
     // linker directory
     let current_dir = env::current_dir().expect("Could not fetch current directory");
     let lib_dir = {
@@ -154,7 +161,7 @@ fn main() -> Result<(), Box<Error>> {
     if !new_dir.exists() {
         overwrite_dir(xed_dir, new_dir.clone())?;
     }
-    
+
     new_dir.pop();
     env::set_current_dir(new_dir.clone())?;
 
@@ -162,12 +169,8 @@ fn main() -> Result<(), Box<Error>> {
     println!("cargo:rerun-if-changed=build.rs");
 
     // Build the project
-    let output = 
-        add_msvc_arg(
-            Command::new("python")
-                .arg("mfile.py")
-        )?
-        .arg(format!("--jobs={}", num_cpus::get()))
+    let output = add_msvc_arg(Command::new("python").arg("mfile.py"))?
+        .arg(format!("--jobs={}", 8))
         .arg("--silent")
         .arg("--static-stripped")
         //.arg("--extra-ccflags=-fPIC")
@@ -180,7 +183,10 @@ fn main() -> Result<(), Box<Error>> {
     handle_err(output, "Failed to run `mfile.py`");
 
     // Configure linker
-    println!("cargo:rustc-link-search=native={}", lib_dir.to_string_lossy());
+    println!(
+        "cargo:rustc-link-search=native={}",
+        lib_dir.to_string_lossy()
+    );
     println!("cargo:rustc-link-lib=static=xed");
 
     // auto generate bindings
@@ -188,4 +194,3 @@ fn main() -> Result<(), Box<Error>> {
 
     Ok(())
 }
-
