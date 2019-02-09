@@ -1,3 +1,5 @@
+#![allow(unreachable_code, dead_code)]
+
 extern crate bindgen;
 extern crate fs_extra;
 extern crate num_cpus;
@@ -44,11 +46,8 @@ fn handle_err<A: AsRef<str>>(o: io::Result<Output>, cmd: A) -> Output {
 }
 
 const BINDGEN_JOBS: &'static [(&'static str, &'static str)] = &[
-    (
-        "xed/include/public/xed/xed-interface.h",
-        "../xed_interface.rs",
-    ),
-    ("xed/include/public/xed/xed-version.h", "../xed_version.rs"),
+    ("install/include/xed/xed-interface.h", "xed_interface.rs"),
+    ("install/include/xed/xed-version.h", "xed_version.rs"),
 ];
 
 fn create_dir<P: AsRef<Path>>(path: P) -> io::Result<()> {
@@ -75,28 +74,50 @@ fn overwrite_dir<P1: AsRef<Path>, P2: AsRef<Path>>(src: P1, dest: P2) -> FsResul
 }
 
 /// Autogenerates bindings
-fn build_bindings() {
+fn build_bindings() -> Result<(), Box<dyn Error + 'static>> {
+    let out_dir = path::PathBuf::from(env::var("OUT_DIR")?);
+
+    let mut include_dir = out_dir.clone();
+    include_dir.push("install");
+    include_dir.push("include");
+
     for job in BINDGEN_JOBS {
-        let dot_h = job.0;
-        let dot_rs = job.1;
+        let mut dot_h = out_dir.clone();
+        dot_h.push(job.0);
+
+        let mut dot_rs = out_dir.clone();
+        dot_rs.push(job.1);
+
         let bindings = match bindgen::Builder::default()
-            .clang_arg("--include-directory=xed/obj")
-            .clang_arg("--include-directory=xed/include/public/xed")
+            .clang_arg(format!("--include-directory={}", include_dir.display()))
             .clang_arg("-DXED_ENCODER")
-            .header(dot_h)
+            .clang_arg("-fkeep-inline-functions")
+            .header(format!("{}", dot_h.display()))
+            .impl_debug(true)
+            .derive_copy(true)
+            .derive_debug(true)
+            .prepend_enum_name(false)
+            .generate_inline_functions(true)
             .generate()
         {
             Ok(x) => x,
-            Err(e) => panic!("Could not generate bindings for {}. Error {:?}", dot_h, e),
+            Err(e) => panic!(
+                "Could not generate bindings for {}. Error {:?}",
+                dot_h.display(),
+                e
+            ),
         };
-        match bindings.write_to_file(dot_rs) {
+        match bindings.write_to_file(&dot_rs) {
             Ok(_) => {}
             Err(e) => panic!(
                 "Could not write generated bindings to {}. Error {:?}",
-                dot_rs, e
+                dot_rs.display(),
+                e
             ),
         };
     }
+
+    Ok(())
 }
 
 #[cfg(target_env = "msvc")]
@@ -123,16 +144,18 @@ fn add_msvc_arg(cmd: &mut Command) -> Result<&mut Command, Box<Error>> {
 
 /// Build script entry point
 fn main() -> Result<(), Box<Error>> {
+    #[cfg(target_env = "msvc")]
+    return Ok(());
+
     let out_dir = env::var("OUT_DIR").unwrap();
     let triple = Triple::from_str(&env::var("TARGET").unwrap()).unwrap();
 
     // linker directory
     let current_dir = env::current_dir().expect("Could not fetch current directory");
     let lib_dir = {
-        let mut x = current_dir.clone();
-        x.push("xed");
-        x.push("build");
-        x.push("obj");
+        let mut x = path::PathBuf::from(&out_dir);
+        x.push("install");
+        x.push("lib");
         x
     };
     let xed_dir = {
@@ -147,9 +170,13 @@ fn main() -> Result<(), Box<Error>> {
     };
 
     let mut new_dir = path::PathBuf::from(&out_dir);
-    new_dir.push("xed-build");
     //dir::remove(new_dir.clone()).err();
     create_dir(new_dir.clone())?;
+
+    new_dir.push("install");
+    let install_dir = new_dir.clone();
+    create_dir(&install_dir)?;
+    new_dir.pop();
 
     new_dir.push("mbuild");
     if !new_dir.exists() {
@@ -168,16 +195,25 @@ fn main() -> Result<(), Box<Error>> {
     // Ignore changes in all other files except build.rs
     println!("cargo:rerun-if-changed=build.rs");
 
+    let python_check = Command::new("python").arg("-V").output();
+
+    if python_check.is_err() {
+        println!("Unable to run python! Python is required to build xed.");
+        ::std::process::exit(1);
+    }
+
     // Build the project
     let output = add_msvc_arg(Command::new("python").arg("mfile.py"))?
-        .arg(format!("--jobs={}", 8))
+        .arg(format!("--jobs={}", num_cpus::get()))
         .arg("--silent")
         .arg("--static-stripped")
-        //.arg("--extra-ccflags=-fPIC")
+        .arg("--extra-ccflags=-fPIC")
         .arg("--opt=3")
         .arg("--no-werror")
         //.arg(format!("--toolchain={}", toolchain))
         .arg(format!("--host-cpu={}", triple.architecture))
+        .arg(format!("--install-dir={}", install_dir.display()))
+        .arg("install")
         .current_dir("xed")
         .output();
     handle_err(output, "Failed to run `mfile.py`");
@@ -190,7 +226,7 @@ fn main() -> Result<(), Box<Error>> {
     println!("cargo:rustc-link-lib=static=xed");
 
     // auto generate bindings
-    build_bindings();
+    build_bindings()?;
 
     Ok(())
 }

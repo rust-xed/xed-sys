@@ -9,5 +9,5 @@ pub unsafe fn xed_iform_to_iclass(iform: xed_iform_enum_t) -> xed_iclass_enum_t 
     if !ii.is_null() {
         return (*ii).iclass();
     }
-    return xed_iclass_enum_t_XED_ICLASS_INVALID;
+    return XED_ICLASS_INVALID;
 }

@@ -20,7 +20,7 @@ pub unsafe fn xed_disp(displacement: u64, displacement_bits: u32) -> xed_enc_dis
 /// @returns xed_encoder_operand_t An operand.
 pub unsafe fn xed_relbr(brdisp: i32, width_bits: xed_uint_t) -> xed_encoder_operand_t {
     return xed_encoder_operand_t {
-        type_: xed_encoder_operand_type_t_XED_ENCODER_OPERAND_TYPE_BRDISP,
+        type_: XED_ENCODER_OPERAND_TYPE_BRDISP,
         width_bits,
         u: xed_encoder_operand_t__bindgen_ty_1 { brdisp },
     };
@@ -34,7 +34,7 @@ pub unsafe fn xed_relbr(brdisp: i32, width_bits: xed_uint_t) -> xed_encoder_oper
 /// @returns xed_encoder_operand_t An operand.
 pub unsafe fn xed_ptr(brdisp: i32, width_bits: xed_uint_t) -> xed_encoder_operand_t {
     return xed_encoder_operand_t {
-        type_: xed_encoder_operand_type_t_XED_ENCODER_OPERAND_TYPE_PTR,
+        type_: XED_ENCODER_OPERAND_TYPE_PTR,
         width_bits,
         u: xed_encoder_operand_t__bindgen_ty_1 { brdisp },
     };
@@ -46,7 +46,7 @@ pub unsafe fn xed_ptr(brdisp: i32, width_bits: xed_uint_t) -> xed_encoder_operan
 /// @returns xed_encoder_operand_t An operand.
 pub unsafe fn xed_reg(reg: xed_reg_enum_t) -> xed_encoder_operand_t {
     return xed_encoder_operand_t {
-        type_: xed_encoder_operand_type_t_XED_ENCODER_OPERAND_TYPE_REG,
+        type_: XED_ENCODER_OPERAND_TYPE_REG,
         width_bits: 0,
         u: xed_encoder_operand_t__bindgen_ty_1 { reg },
     };
@@ -59,7 +59,7 @@ pub unsafe fn xed_reg(reg: xed_reg_enum_t) -> xed_encoder_operand_t {
 /// @returns xed_encoder_operand_t An operand.
 pub unsafe fn xed_imm0(v: u64, width_bits: xed_uint_t) -> xed_encoder_operand_t {
     return xed_encoder_operand_t {
-        type_: xed_encoder_operand_type_t_XED_ENCODER_OPERAND_TYPE_IMM0,
+        type_: XED_ENCODER_OPERAND_TYPE_IMM0,
         width_bits,
         u: xed_encoder_operand_t__bindgen_ty_1 { imm0: v },
     };
@@ -72,7 +72,7 @@ pub unsafe fn xed_imm0(v: u64, width_bits: xed_uint_t) -> xed_encoder_operand_t 
 /// @returns xed_encoder_operand_t An operand.
 pub unsafe fn xed_simm0(v: u32, width_bits: xed_uint_t) -> xed_encoder_operand_t {
     return xed_encoder_operand_t {
-        type_: xed_encoder_operand_type_t_XED_ENCODER_OPERAND_TYPE_SIMM0,
+        type_: XED_ENCODER_OPERAND_TYPE_SIMM0,
         width_bits,
         u: xed_encoder_operand_t__bindgen_ty_1 {
             // Comment from original source
@@ -91,7 +91,7 @@ pub unsafe fn xed_simm0(v: u32, width_bits: xed_uint_t) -> xed_encoder_operand_t
 /// @returns xed_encoder_operand_t An operand.
 pub unsafe fn xed_imm1(v: u8) -> xed_encoder_operand_t {
     let mut o: xed_encoder_operand_t = mem::uninitialized();
-    o.type_ = xed_encoder_operand_type_t_XED_ENCODER_OPERAND_TYPE_IMM1;
+    o.type_ = XED_ENCODER_OPERAND_TYPE_IMM1;
     o.width_bits = 8;
     o.u.imm1 = v;
     return o;
@@ -101,7 +101,7 @@ pub unsafe fn xed_imm1(v: u8) -> xed_encoder_operand_t {
 /// an operand storage field name and value
 pub unsafe fn xed_other(operand_name: xed_operand_enum_t, value: u32) -> xed_encoder_operand_t {
     let mut o: xed_encoder_operand_t = mem::uninitialized();
-    o.type_ = xed_encoder_operand_type_t_XED_ENCODER_OPERAND_TYPE_OTHER;
+    o.type_ = XED_ENCODER_OPERAND_TYPE_OTHER;
     o.width_bits = 0;
     o.u.s.operand_name = operand_name;
     o.u.s.value = value;
@@ -112,7 +112,7 @@ pub unsafe fn xed_other(operand_name: xed_operand_enum_t, value: u32) -> xed_enc
 /// seg reg override for implicit suppressed memory ops
 pub unsafe fn xed_seg0(seg0: xed_reg_enum_t) -> xed_encoder_operand_t {
     let mut o: xed_encoder_operand_t = mem::uninitialized();
-    o.type_ = xed_encoder_operand_type_t_XED_ENCODER_OPERAND_TYPE_SEG0;
+    o.type_ = XED_ENCODER_OPERAND_TYPE_SEG0;
     o.u.reg = seg0;
     o.width_bits = 0;
     return o;
@@ -122,7 +122,7 @@ pub unsafe fn xed_seg0(seg0: xed_reg_enum_t) -> xed_encoder_operand_t {
 /// seg reg override for implicit suppressed memory ops
 pub unsafe fn xed_seg1(seg1: xed_reg_enum_t) -> xed_encoder_operand_t {
     let mut o: xed_encoder_operand_t = mem::uninitialized();
-    o.type_ = xed_encoder_operand_type_t_XED_ENCODER_OPERAND_TYPE_SEG1;
+    o.type_ = XED_ENCODER_OPERAND_TYPE_SEG1;
     o.u.reg = seg1;
     o.width_bits = 0;
     return o;
@@ -135,10 +135,10 @@ pub unsafe fn xed_seg1(seg1: xed_reg_enum_t) -> xed_encoder_operand_t {
 /// @returns xed_encoder_operand_t An operand.
 pub unsafe fn xed_mem_b(base: xed_reg_enum_t, width_bits: xed_uint_t) -> xed_encoder_operand_t {
     let mut o: xed_encoder_operand_t = mem::uninitialized();
-    o.type_ = xed_encoder_operand_type_t_XED_ENCODER_OPERAND_TYPE_MEM;
+    o.type_ = XED_ENCODER_OPERAND_TYPE_MEM;
     o.u.mem.base = base;
-    o.u.mem.seg = xed_reg_enum_t_XED_REG_INVALID;
-    o.u.mem.index = xed_reg_enum_t_XED_REG_INVALID;
+    o.u.mem.seg = XED_REG_INVALID;
+    o.u.mem.index = XED_REG_INVALID;
     o.u.mem.scale = 0;
     o.u.mem.disp.displacement = 0;
     o.u.mem.disp.displacement_bits = 0;
@@ -158,10 +158,10 @@ pub unsafe fn xed_mem_bd(
     width_bits: xed_uint_t,
 ) -> xed_encoder_operand_t {
     let mut o: xed_encoder_operand_t = mem::uninitialized();
-    o.type_ = xed_encoder_operand_type_t_XED_ENCODER_OPERAND_TYPE_MEM;
+    o.type_ = XED_ENCODER_OPERAND_TYPE_MEM;
     o.u.mem.base = base;
-    o.u.mem.seg = xed_reg_enum_t_XED_REG_INVALID;
-    o.u.mem.index = xed_reg_enum_t_XED_REG_INVALID;
+    o.u.mem.seg = XED_REG_INVALID;
+    o.u.mem.index = XED_REG_INVALID;
     o.u.mem.scale = 0;
     o.u.mem.disp = disp;
     o.width_bits = width_bits;
@@ -184,9 +184,9 @@ pub unsafe fn xed_mem_bisd(
     width_bits: xed_uint_t,
 ) -> xed_encoder_operand_t {
     let mut o: xed_encoder_operand_t = mem::uninitialized();
-    o.type_ = xed_encoder_operand_type_t_XED_ENCODER_OPERAND_TYPE_MEM;
+    o.type_ = XED_ENCODER_OPERAND_TYPE_MEM;
     o.u.mem.base = base;
-    o.u.mem.seg = xed_reg_enum_t_XED_REG_INVALID;
+    o.u.mem.seg = XED_REG_INVALID;
     o.u.mem.index = index;
     o.u.mem.scale = scale;
     o.u.mem.disp = disp;
@@ -206,10 +206,10 @@ pub unsafe fn xed_mem_gb(
     width_bits: xed_uint_t,
 ) -> xed_encoder_operand_t {
     let mut o: xed_encoder_operand_t = mem::uninitialized();
-    o.type_ = xed_encoder_operand_type_t_XED_ENCODER_OPERAND_TYPE_MEM;
+    o.type_ = XED_ENCODER_OPERAND_TYPE_MEM;
     o.u.mem.base = base;
     o.u.mem.seg = seg;
-    o.u.mem.index = xed_reg_enum_t_XED_REG_INVALID;
+    o.u.mem.index = XED_REG_INVALID;
     o.u.mem.scale = 0;
     o.u.mem.disp.displacement = 0;
     o.u.mem.disp.displacement_bits = 0;
@@ -231,10 +231,10 @@ pub unsafe fn xed_mem_gbd(
     width_bits: xed_uint_t,
 ) -> xed_encoder_operand_t {
     let mut o: xed_encoder_operand_t = mem::uninitialized();
-    o.type_ = xed_encoder_operand_type_t_XED_ENCODER_OPERAND_TYPE_MEM;
+    o.type_ = XED_ENCODER_OPERAND_TYPE_MEM;
     o.u.mem.base = base;
     o.u.mem.seg = seg;
-    o.u.mem.index = xed_reg_enum_t_XED_REG_INVALID;
+    o.u.mem.index = XED_REG_INVALID;
     o.u.mem.scale = 0;
     o.u.mem.disp = disp;
     o.width_bits = width_bits;
@@ -253,10 +253,10 @@ pub unsafe fn xed_mem_gd(
     width_bits: xed_uint_t,
 ) -> xed_encoder_operand_t {
     let mut o: xed_encoder_operand_t = mem::uninitialized();
-    o.type_ = xed_encoder_operand_type_t_XED_ENCODER_OPERAND_TYPE_MEM;
-    o.u.mem.base = xed_reg_enum_t_XED_REG_INVALID;
+    o.type_ = XED_ENCODER_OPERAND_TYPE_MEM;
+    o.u.mem.base = XED_REG_INVALID;
     o.u.mem.seg = seg;
-    o.u.mem.index = xed_reg_enum_t_XED_REG_INVALID;
+    o.u.mem.index = XED_REG_INVALID;
     o.u.mem.scale = 0;
     o.u.mem.disp = disp;
     o.width_bits = width_bits;
@@ -281,7 +281,7 @@ pub unsafe fn xed_mem_gbisd(
     width_bits: xed_uint_t,
 ) -> xed_encoder_operand_t {
     let mut o: xed_encoder_operand_t = mem::uninitialized();
-    o.type_ = xed_encoder_operand_type_t_XED_ENCODER_OPERAND_TYPE_MEM;
+    o.type_ = XED_ENCODER_OPERAND_TYPE_MEM;
     o.u.mem.base = base;
     o.u.mem.seg = seg;
     o.u.mem.index = index;

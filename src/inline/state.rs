@@ -44,8 +44,8 @@ pub unsafe fn xed_state_init2(
 /// clear the xed_state_t
 /// @ingroup INIT
 pub unsafe fn xed_state_zero(p: *mut xed_state_t) {
-    (*p).mmode = xed_machine_mode_enum_t_XED_MACHINE_MODE_INVALID;
-    (*p).stack_addr_width = xed_address_width_enum_t_XED_ADDRESS_WIDTH_INVALID;
+    (*p).mmode = XED_MACHINE_MODE_INVALID;
+    (*p).stack_addr_width = XED_ADDRESS_WIDTH_INVALID;
 }
 
 /// return the machine mode
@@ -57,27 +57,25 @@ pub unsafe fn xed_state_get_machine_mode(p: *const xed_state_t) -> xed_machine_m
 /// true iff the machine is in LONG_64 mode
 /// @ingroup INIT
 pub unsafe fn xed_state_long64_mode(p: *const xed_state_t) -> xed_bool_t {
-    return (xed_state_get_machine_mode(p) == xed_machine_mode_enum_t_XED_MACHINE_MODE_LONG_64)
-        as xed_bool_t;
+    return (xed_state_get_machine_mode(p) == XED_MACHINE_MODE_LONG_64) as xed_bool_t;
 }
 
 /// @ingroup INIT
 pub unsafe fn xed_state_real_mode(p: *const xed_state_t) -> xed_bool_t {
-    return (xed_state_get_machine_mode(p) == xed_machine_mode_enum_t_XED_MACHINE_MODE_REAL_16)
-        as xed_bool_t;
+    return (xed_state_get_machine_mode(p) == XED_MACHINE_MODE_REAL_16) as xed_bool_t;
 }
 
 /// @ingroup INIT
 pub unsafe fn xed_state_mode_width_16(p: *const xed_state_t) -> xed_bool_t {
-    return (xed_state_get_machine_mode(p) == xed_machine_mode_enum_t_XED_MACHINE_MODE_LEGACY_16
-        || xed_state_get_machine_mode(p) == xed_machine_mode_enum_t_XED_MACHINE_MODE_LONG_COMPAT_16)
+    return (xed_state_get_machine_mode(p) == XED_MACHINE_MODE_LEGACY_16
+        || xed_state_get_machine_mode(p) == XED_MACHINE_MODE_LONG_COMPAT_16)
         as xed_bool_t;
 }
 
 /// @ingroup INIT
 pub unsafe fn xed_state_mode_width_32(p: *const xed_state_t) -> xed_bool_t {
-    return (xed_state_get_machine_mode(p) == xed_machine_mode_enum_t_XED_MACHINE_MODE_LEGACY_32
-        || xed_state_get_machine_mode(p) == xed_machine_mode_enum_t_XED_MACHINE_MODE_LONG_COMPAT_32)
+    return (xed_state_get_machine_mode(p) == XED_MACHINE_MODE_LEGACY_32
+        || xed_state_get_machine_mode(p) == XED_MACHINE_MODE_LONG_COMPAT_32)
         as xed_bool_t;
 }
 
@@ -91,25 +89,13 @@ pub unsafe fn xed_state_set_machine_mode(p: *mut xed_state_t, arg_mode: xed_mach
 /// @ingroup INIT
 pub unsafe fn xed_state_get_address_width(p: *const xed_state_t) -> xed_address_width_enum_t {
     match xed_state_get_machine_mode(p) {
-        xed_machine_mode_enum_t_XED_MACHINE_MODE_LONG_64 => {
-            xed_address_width_enum_t_XED_ADDRESS_WIDTH_64b
-        }
-        xed_machine_mode_enum_t_XED_MACHINE_MODE_REAL_16 => {
-            xed_address_width_enum_t_XED_ADDRESS_WIDTH_32b
-        }
-        xed_machine_mode_enum_t_XED_MACHINE_MODE_LEGACY_32 => {
-            xed_address_width_enum_t_XED_ADDRESS_WIDTH_32b
-        }
-        xed_machine_mode_enum_t_XED_MACHINE_MODE_LONG_COMPAT_32 => {
-            xed_address_width_enum_t_XED_ADDRESS_WIDTH_32b
-        }
-        xed_machine_mode_enum_t_XED_MACHINE_MODE_LEGACY_16 => {
-            xed_address_width_enum_t_XED_ADDRESS_WIDTH_16b
-        }
-        xed_machine_mode_enum_t_XED_MACHINE_MODE_LONG_COMPAT_16 => {
-            xed_address_width_enum_t_XED_ADDRESS_WIDTH_16b
-        }
-        _ => xed_address_width_enum_t_XED_ADDRESS_WIDTH_INVALID,
+        XED_MACHINE_MODE_LONG_64 => XED_ADDRESS_WIDTH_64b,
+        XED_MACHINE_MODE_REAL_16 => XED_ADDRESS_WIDTH_32b,
+        XED_MACHINE_MODE_LEGACY_32 => XED_ADDRESS_WIDTH_32b,
+        XED_MACHINE_MODE_LONG_COMPAT_32 => XED_ADDRESS_WIDTH_32b,
+        XED_MACHINE_MODE_LEGACY_16 => XED_ADDRESS_WIDTH_16b,
+        XED_MACHINE_MODE_LONG_COMPAT_16 => XED_ADDRESS_WIDTH_16b,
+        _ => XED_ADDRESS_WIDTH_INVALID,
     }
 }
 

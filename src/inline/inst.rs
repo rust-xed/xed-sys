@@ -37,7 +37,7 @@ pub unsafe fn xed_opreand_nonterminal_name(p: *const xed_operand_t) -> xed_nonte
     if (*p)._nt != 0 {
         return (*p)._u._nt;
     }
-    return xed_nonterminal_enum_t_XED_NONTERMINAL_INVALID;
+    return XED_NONTERMINAL_INVALID;
 }
 /// @ingroup DEC
 /// Careful with this one -- use #xed_decoded_inst_get_reg()! This one is
@@ -49,10 +49,10 @@ pub unsafe fn xed_opreand_nonterminal_name(p: *const xed_operand_t) -> xed_nonte
 /// @param p  an operand template,  #xed_operand_t.
 /// @return  the implicit or suppressed registers, type #xed_reg_enum_t
 pub unsafe fn xed_operand_reg(p: *const xed_operand_t) -> xed_reg_enum_t {
-    if xed_operand_type(p) == xed_operand_type_enum_t_XED_OPERAND_TYPE_REG {
+    if xed_operand_type(p) == XED_OPERAND_TYPE_REG {
         return (*p)._u._reg;
     }
-    return xed_reg_enum_t_XED_REG_INVALID;
+    return XED_REG_INVALID;
 }
 
 /// @ingroup DEC
@@ -66,8 +66,7 @@ pub unsafe fn xed_operand_reg(p: *const xed_operand_t) -> xed_reg_enum_t {
 ///   register, #xed_reg_enum_t. Use #xed_operand_is_register() to test
 ///   #xed_operand_enum_t names.
 pub unsafe fn xed_operand_template_is_register(p: *const xed_operand_t) -> xed_uint_t {
-    return ((*p)._nt != 0 || (*p)._type as u32 == xed_operand_type_enum_t_XED_OPERAND_TYPE_REG)
-        as u32;
+    return ((*p)._nt != 0 || (*p)._type as u32 == XED_OPERAND_TYPE_REG) as u32;
 }
 
 /// @ingroup DEC
@@ -75,7 +74,7 @@ pub unsafe fn xed_operand_template_is_register(p: *const xed_operand_t) -> xed_u
 /// These operands represent branch displacements, memory displacements and
 /// various immediates
 pub unsafe fn xed_operand_imm(p: *const xed_operand_t) -> xed_uint_t {
-    if xed_operand_type(p) == xed_operand_type_enum_t_XED_OPERAND_TYPE_IMM_CONST {
+    if xed_operand_type(p) == XED_OPERAND_TYPE_IMM_CONST {
         return (*p)._u._imm;
     }
     return 0;
@@ -89,8 +88,7 @@ pub unsafe fn xed_operand_imm(p: *const xed_operand_t) -> xed_uint_t {
 ///Note there are other registers for memory addressing; See
 /// #xed_operand_is_memory_addressing_register .
 pub unsafe fn xed_operand_is_register(name: xed_operand_enum_t) -> xed_uint_t {
-    return (name >= xed_operand_enum_t_XED_OPERAND_REG0
-        && name <= xed_operand_enum_t_XED_OPERAND_REG8) as u32;
+    return (name >= XED_OPERAND_REG0 && name <= XED_OPERAND_REG8) as u32;
 }
 
 /// @ingroup DEC
@@ -99,11 +97,11 @@ pub unsafe fn xed_operand_is_register(name: xed_operand_enum_t) -> xed_uint_t {
 /// @return 1 if the operand name is for a memory addressing register operand, 0
 /// otherwise. See also #xed_operand_is_register .
 pub unsafe fn xed_operand_is_memory_addressing_register(name: xed_operand_enum_t) -> xed_uint_t {
-    return (name == xed_operand_enum_t_XED_OPERAND_BASE0
-        || name == xed_operand_enum_t_XED_OPERAND_INDEX
-        || name == xed_operand_enum_t_XED_OPERAND_SEG0
-        || name == xed_operand_enum_t_XED_OPERAND_BASE1
-        || name == xed_operand_enum_t_XED_OPERAND_SEG1) as u32;
+    return (name == XED_OPERAND_BASE0
+        || name == XED_OPERAND_INDEX
+        || name == XED_OPERAND_SEG0
+        || name == XED_OPERAND_BASE1
+        || name == XED_OPERAND_SEG1) as u32;
 }
 
 /// @ingroup DEC
