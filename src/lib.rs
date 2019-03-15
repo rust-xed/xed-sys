@@ -5,8 +5,6 @@
 //! Note that `xed_tables_init()` must be called before
 //! using the library.
 
-#![feature(extern_types)]
-
 #![allow(
     non_snake_case,
     dead_code,
