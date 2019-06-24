@@ -3,8 +3,6 @@
 # xed-sys
 Rust bindings for Intel XED.
 
-# Example
-
 ```rust
 /// Similar to `examples/xed-min.c` from official Intel XED repository.
 use xed_sys2::xed_interface::*;
@@ -32,14 +30,14 @@ fn main() {
 }
 ```
 
-# Cargo.toml setup
+## Cargo.toml setup
 
 ```toml
 [dependencies]
 xed-sys2 = { git = "https://github.com/rust-xed/xed-sys", branch = "master" }
 ```
 
-# Building
+## Building
 
 In order to build this crate, you need:
 * A nightly version of Rust.
@@ -48,7 +46,7 @@ In order to build this crate, you need:
 
 Alternatively, you may check [.travis.yml](.travis.yml) to see the dependencies installed in the CI setup.
 
-# Examples
+## Examples
 You can find examples in the examples/ directory which can be compiled and run with Cargo.
 For instance, the following sequence of commands builds and runs the xed-min example:
 
