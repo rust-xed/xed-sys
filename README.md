@@ -3,7 +3,7 @@
 # xed-sys
 Rust bindings for Intel XED.
 
-# Cargoo.toml setup
+# Cargo.toml setup
 
 ```toml
 [dependencies]
