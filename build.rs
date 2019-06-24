@@ -138,12 +138,12 @@ fn add_msvc_arg(cmd: &mut Command) -> Result<&mut Command, Box<Error>> {
     Ok(cmd)
 }
 #[cfg(not(target_env = "msvc"))]
-fn add_msvc_arg(cmd: &mut Command) -> Result<&mut Command, Box<Error>> {
+fn add_msvc_arg(cmd: &mut Command) -> Result<&mut Command, Box<dyn Error>> {
     Ok(cmd)
 }
 
 /// Build script entry point
-fn main() -> Result<(), Box<Error>> {
+fn main() -> Result<(), Box<dyn Error>> {
     #[cfg(target_env = "msvc")]
     return Ok(());
 
