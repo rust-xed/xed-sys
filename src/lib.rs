@@ -44,3 +44,23 @@ pub mod xed_version {
     #[cfg(not(target_env = "msvc"))]
     include!(concat!(env!("OUT_DIR"), "/xed_version.rs"));
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_xed_get_copyright() {
+        let version = unsafe {
+            std::ffi::CStr::from_ptr(xed_version::xed_get_copyright())
+                .to_string_lossy()
+                .to_string()
+        };
+
+        assert_eq!(
+            "Copyright (C) 2017, Intel Corporation. All rights reserved.",
+            &version
+        );
+    }
+
+}
