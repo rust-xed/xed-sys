@@ -3,12 +3,11 @@
 # xed-sys
 Rust bindings for Intel XED.
 
-# Cargo setup
+# Cargoo.toml setup
 
-`Cargo.toml`:
 ```toml
 [dependencies]
-xed-sys2 = { git = "https://github.com/Phantomical/xed-sys", branch = "master" }
+xed-sys2 = { git = "https://github.com/rust-xed/xed-sys", branch = "master" }
 ```
 
 # Building
