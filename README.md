@@ -19,3 +19,11 @@ In order to build this crate, you need:
 
 Alternatively, you may check [.travis.yml](.travis.yml) to see the dependencies installed in the CI setup.
 
+# Examples
+You can find examples in the examples/ directory which can be compiled and run with Cargo.
+For instance, the following sequence of commands builds and runs the xed-min example:
+
+```
+cd examples/xed-min
+cargo run
+```
