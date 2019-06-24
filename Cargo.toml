@@ -1,3 +1,9 @@
+[workspace]
+members = [
+    ".",
+    "examples/xed-min",
+]
+
 [package]
 name = "xed-sys2"
 version = "0.0.1"

@@ -1,0 +1,9 @@
+[package]
+name = "xed-min"
+version = "0.0.0"
+workspace = "../../"
+publish = false
+edition = "2018"
+
+[dependencies]
+xed-sys2 = { path = "../.." }
