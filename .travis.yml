@@ -2,12 +2,7 @@ language: rust
 os:
     - linux
 rust:
-    - stable
-    - beta
     - nightly
-matrix:
-    allow_failures:
-        - rust: nightly
 
 before_install:
     - sudo apt-get update
