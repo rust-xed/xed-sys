@@ -1,7 +1,7 @@
 language: rust
 
 os:
-    - linux
+  - linux
 
 rust:
   - stable
@@ -13,5 +13,12 @@ matrix:
   fast_finish: true
 
 before_install:
-    - sudo apt-get update
-    - sudo apt-get install -y llvm-3.9-dev libclang-3.9-dev clang-3.9
+  - sudo apt-get update
+  - sudo apt-get install -y llvm-3.9-dev libclang-3.9-dev clang-3.9
+
+before_script:
+  - rustup component add clippy
+
+script:
+  - cargo test --verbose
+  - cargo clippy --all-targets --all-features -- -D warnings
