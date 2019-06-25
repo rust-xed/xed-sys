@@ -17,7 +17,7 @@
     no_mangle_const_items,
     non_upper_case_globals,
     unreachable_code,
-    intra_doc_link_resolution_failure,
+    intra_doc_link_resolution_failure
 )]
 
 extern crate core;
@@ -32,8 +32,8 @@ mod xed_interface_inner {
 }
 
 pub mod xed_interface {
-    pub use crate::xed_interface_inner::*;
     pub use crate::c2rust::*;
+    pub use crate::xed_interface_inner::*;
 }
 
 pub mod xed_version {

@@ -6,7 +6,6 @@ mod libc {
 
 use crate::xed_interface::*;
 
-
 pub unsafe extern "C" fn xed_make_uint64(mut hi: u32, mut lo: u32) -> u64 {
     let mut y: xed_union64_t = xed_union64_t { byte: [0; 8] };
     y.s.lo32 = lo;
@@ -240,10 +239,7 @@ pub unsafe extern "C" fn xed3_operand_get_uimm1(mut d: *const xed_decoded_inst_t
     return (*d)._operands.uimm1;
 }
 
-pub unsafe extern "C" fn xed3_operand_set_uimm1(
-    mut d: *mut xed_decoded_inst_t,
-    mut opval: u8,
-) {
+pub unsafe extern "C" fn xed3_operand_set_uimm1(mut d: *mut xed_decoded_inst_t, mut opval: u8) {
     (*d)._operands.uimm1 = opval;
 }
 
@@ -251,10 +247,7 @@ pub unsafe extern "C" fn xed3_operand_get_uimm0(mut d: *const xed_decoded_inst_t
     return (*d)._operands.uimm0;
 }
 
-pub unsafe extern "C" fn xed3_operand_set_uimm0(
-    mut d: *mut xed_decoded_inst_t,
-    mut opval: u64,
-) {
+pub unsafe extern "C" fn xed3_operand_set_uimm0(mut d: *mut xed_decoded_inst_t, mut opval: u64) {
     (*d)._operands.uimm0 = opval;
 }
 
@@ -632,10 +625,7 @@ pub unsafe extern "C" fn xed3_operand_get_imm_width(mut d: *const xed_decoded_in
     return (*d)._operands.imm_width;
 }
 
-pub unsafe extern "C" fn xed3_operand_set_imm_width(
-    mut d: *mut xed_decoded_inst_t,
-    mut opval: u8,
-) {
+pub unsafe extern "C" fn xed3_operand_set_imm_width(mut d: *mut xed_decoded_inst_t, mut opval: u8) {
     (*d)._operands.imm_width = opval;
 }
 
@@ -1080,9 +1070,7 @@ pub unsafe extern "C" fn xed3_operand_set_mem0(
     (*d)._operands.mem0 = opval as u8;
 }
 
-pub unsafe extern "C" fn xed3_operand_get_brdisp_width(
-    mut d: *const xed_decoded_inst_t,
-) -> u8 {
+pub unsafe extern "C" fn xed3_operand_get_brdisp_width(mut d: *const xed_decoded_inst_t) -> u8 {
     return (*d)._operands.brdisp_width;
 }
 // / @name Exceptions
@@ -1830,10 +1818,7 @@ pub unsafe extern "C" fn xed_reg(mut reg: xed_reg_enum_t) -> xed_encoder_operand
     return o;
 }
 
-pub unsafe extern "C" fn xed_imm0(
-    mut v: u64,
-    mut width_bits: xed_uint_t,
-) -> xed_encoder_operand_t {
+pub unsafe extern "C" fn xed_imm0(mut v: u64, mut width_bits: xed_uint_t) -> xed_encoder_operand_t {
     let mut o: xed_encoder_operand_t = xed_encoder_operand_t {
         type_: XED_ENCODER_OPERAND_TYPE_INVALID,
         u: xed_encoder_operand_t__bindgen_ty_1 {
@@ -2406,9 +2391,7 @@ pub unsafe extern "C" fn xed_decoded_inst_get_second_immediate(
     return xed3_operand_get_uimm1(p);
 }
 
-pub unsafe extern "C" fn xed_decoded_inst_get_user_data(
-    mut p: *mut xed_decoded_inst_t,
-) -> u64 {
+pub unsafe extern "C" fn xed_decoded_inst_get_user_data(mut p: *mut xed_decoded_inst_t) -> u64 {
     return (*p).u.user_data;
 }
 
