@@ -40,7 +40,6 @@ xed-sys2 = { git = "https://github.com/rust-xed/xed-sys", branch = "master" }
 ## Building
 
 In order to build this crate, you need:
-* A nightly version of Rust.
 * Python version 2.7, 3.4 or later ([to build XED](https://intelxed.github.io/build-manual/)).
 * clang ([to build XED](https://intelxed.github.io/build-manual/) and [run bindgen](https://rust-lang.github.io/rust-bindgen/requirements.html#requirements)).
 

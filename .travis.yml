@@ -1,8 +1,16 @@
 language: rust
+
 os:
     - linux
+
 rust:
-    - nightly
+  - stable
+  - beta
+  - nightly
+matrix:
+  allow_failures:
+    - rust: nightly
+  fast_finish: true
 
 before_install:
     - sudo apt-get update
