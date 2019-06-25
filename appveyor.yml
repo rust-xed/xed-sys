@@ -9,6 +9,7 @@ environment:
 # Install the rust target and channel defined by the 
 # configuration matrix.
 install:
+  - git submodule update --init
   - appveyor DownloadFile https://win.rustup.rs/ -FileName rustup-init.exe
   - rustup-init -yv --default-toolchain %channel% --default-host %target%
   - set PATH=%PATH%;%USERPROFILE%\.cargo\bin
