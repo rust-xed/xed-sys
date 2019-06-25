@@ -3,14 +3,41 @@
 # xed-sys
 Rust bindings for Intel XED.
 
-# Cargo.toml setup
+```rust
+/// Similar to `examples/xed-min.c` from official Intel XED repository.
+use xed_sys2::xed_interface::*;
+
+fn main() {
+    unsafe {
+        let (mmode, stack_addr_width) = (XED_MACHINE_MODE_LEGACY_32, XED_ADDRESS_WIDTH_32b);
+
+        xed_tables_init();
+
+        let itext: [u8; 15] = [
+            0xf, 0x85, 0x99, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+        ];
+
+        for bytes in 0..16 {
+            let mut xedd: xed_decoded_inst_t = ::std::mem::uninitialized();
+            xed_decoded_inst_zero(&mut xedd);
+            xed_decoded_inst_set_mode(&mut xedd, mmode, stack_addr_width);
+
+            let xed_error: xed_error_enum_t = xed_decode(&mut xedd, itext.as_ptr(), bytes);
+            let desc = std::ffi::CStr::from_ptr(xed_error_enum_t2str(xed_error)).to_string_lossy();
+            println!("bytes={} error={}", bytes, desc);
+        }
+    }
+}
+```
+
+## Cargo.toml setup
 
 ```toml
 [dependencies]
 xed-sys2 = { git = "https://github.com/rust-xed/xed-sys", branch = "master" }
 ```
 
-# Building
+## Building
 
 In order to build this crate, you need:
 * A nightly version of Rust.
@@ -19,3 +46,11 @@ In order to build this crate, you need:
 
 Alternatively, you may check [.travis.yml](.travis.yml) to see the dependencies installed in the CI setup.
 
+## Examples
+You can find examples in the examples/ directory which can be compiled and run with Cargo.
+For instance, the following sequence of commands builds and runs the xed-min example:
+
+```
+cd examples/xed-min
+cargo run
+```
