@@ -5,6 +5,21 @@ environment:
   matrix:
     - channel: nightly
       target: x86_64-pc-windows-msvc
+    - channel: nightly
+      target: i686-pc-windows-msvc
+    - channel: beta
+      target: x86_64-pc-windows-msvc
+    - channel: beta
+      target: i686-pc-windows-msvc
+    - channel: stable
+      target: x86_64-pc-windows-msvc
+    - channel: stable
+      target: i686-pc-windows-msvc
+
+matrix:
+  allow_failures:
+    - channel: nightly
+
 
 # Install the rust target and channel defined by the 
 # configuration matrix.
@@ -18,5 +33,8 @@ install:
 
 build: false
 
+build_script:
+  - cargo build
+
 test_script:
-  - cargo test --verbose
+  - cargo test
