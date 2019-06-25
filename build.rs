@@ -4,8 +4,6 @@ extern crate bindgen;
 extern crate fs_extra;
 extern crate num_cpus;
 extern crate target_lexicon;
-#[cfg(target_env = "msvc")]
-extern crate vswhere;
 
 use std::env;
 use std::error::Error;
@@ -120,33 +118,8 @@ fn build_bindings() -> Result<(), Box<dyn Error + 'static>> {
     Ok(())
 }
 
-#[cfg(target_env = "msvc")]
-fn add_msvc_arg(cmd: &mut Command) -> Result<&mut Command, Box<Error>> {
-    // Should include preview versions in this but vswhere
-    // currently panics on those
-    let instinfos = vswhere::Config::new().run_default_path()?;
-
-    for inst in instinfos {
-        if inst.installation_version().major() == 15 {
-            let mut path = inst.installation_path();
-            return Ok(cmd.arg(format!("--vc-dir={}", path.join("VC").to_str().unwrap())));
-        }
-    }
-
-    println!("cargo:warning=Unable to find a non-preview version of MSVC, this may cause compilation failures.");
-
-    Ok(cmd)
-}
-#[cfg(not(target_env = "msvc"))]
-fn add_msvc_arg(cmd: &mut Command) -> Result<&mut Command, Box<dyn Error>> {
-    Ok(cmd)
-}
-
 /// Build script entry point
 fn main() -> Result<(), Box<dyn Error>> {
-    #[cfg(target_env = "msvc")]
-    return Ok(());
-
     let out_dir = env::var("OUT_DIR").unwrap();
     let triple = Triple::from_str(&env::var("TARGET").unwrap()).unwrap();
 
@@ -203,7 +176,7 @@ fn main() -> Result<(), Box<dyn Error>> {
     }
 
     // Build the project
-    let output = add_msvc_arg(Command::new("python").arg("mfile.py"))?
+    let output = Command::new("python").arg("mfile.py")
         .arg(format!("--jobs={}", num_cpus::get()))
         .arg("--silent")
         .arg("--static-stripped")
