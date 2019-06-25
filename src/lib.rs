@@ -22,8 +22,10 @@
 
 extern crate core;
 
+#[allow(clippy::all)]
 mod c2rust;
 
+#[allow(clippy::all)]
 mod xed_interface_inner {
     #[cfg(target_env = "msvc")]
     include!("xed_interface.rs");
@@ -31,11 +33,13 @@ mod xed_interface_inner {
     include!(concat!(env!("OUT_DIR"), "/xed_interface.rs"));
 }
 
+#[allow(clippy::all)]
 pub mod xed_interface {
     pub use crate::c2rust::*;
     pub use crate::xed_interface_inner::*;
 }
 
+#[allow(clippy::all)]
 pub mod xed_version {
     #[cfg(target_env = "msvc")]
     include!("xed_version.rs");

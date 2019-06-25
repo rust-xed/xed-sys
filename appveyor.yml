@@ -3,10 +3,19 @@ os: Visual Studio 2015
 
 environment:
   matrix:
+    - channel: stable
+      target: x86_64-pc-windows-msvc
+    - channel: beta
+      target: x86_64-pc-windows-msvc
     - channel: nightly
       target: x86_64-pc-windows-msvc
 
-# Install the rust target and channel defined by the 
+matrix:
+  allow_failures:
+    - channel: nightly
+
+
+# Install the rust target and channel defined by the
 # configuration matrix.
 install:
   - git submodule update --init
@@ -15,8 +24,10 @@ install:
   - set PATH=%PATH%;%USERPROFILE%\.cargo\bin
   - rustc -vV
   - cargo -vV
+  - rustup component add clippy
 
 build: false
 
 test_script:
   - cargo test --verbose
+  - cargo clippy --all-targets --all-features -- -D warnings
