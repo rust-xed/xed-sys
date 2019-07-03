@@ -175,6 +175,9 @@ fn main() -> Result<(), Box<dyn Error>> {
         ::std::process::exit(1);
     }
 
+    // Set locale to C to avoid user language setting interference
+    env::set_var("LC_ALL", "C");
+
     // Build the project
     let output = Command::new("python").arg("mfile.py")
         .arg(format!("--jobs={}", num_cpus::get()))
