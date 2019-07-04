@@ -43,28 +43,24 @@ fn handle_err<A: AsRef<str>>(o: io::Result<Output>, cmd: A) -> Output {
     o
 }
 
-const BINDGEN_JOBS: &'static [(&'static str, &'static str)] = &[
+const BINDGEN_JOBS: &'_ [(&'_ str, &'_ str)] = &[
     ("install/include/xed/xed-interface.h", "xed_interface.rs"),
     ("install/include/xed/xed-version.h", "xed_version.rs"),
 ];
 
 fn create_dir<P: AsRef<Path>>(path: P) -> io::Result<()> {
-    match fs::create_dir(path) {
-        Err(e) => match e.kind() {
-            io::ErrorKind::AlreadyExists => Ok(()),
-            _ => Err(e),
-        },
-        x => x,
-    }
+    fs::create_dir(path).or_else(|e| match e.kind() {
+        io::ErrorKind::AlreadyExists => Ok(()),
+        _ => Err(e),
+    })
 }
 
-fn overwrite_dir<P1: AsRef<Path>, P2: AsRef<Path>>(src: P1, dest: P2) -> FsResult<u64> {
+fn copy_dir_if_needed<P1: AsRef<Path>, P2: AsRef<Path>>(src: P1, dest: P2) -> FsResult<u64> {
     dir::copy(
         src,
         dest,
         &dir::CopyOptions {
             overwrite: true,
-            skip_exist: true,
             copy_inside: true,
             ..dir::CopyOptions::new()
         },
@@ -72,7 +68,7 @@ fn overwrite_dir<P1: AsRef<Path>, P2: AsRef<Path>>(src: P1, dest: P2) -> FsResul
 }
 
 /// Autogenerates bindings
-fn build_bindings() -> Result<(), Box<dyn Error + 'static>> {
+fn build_bindings() -> Result<(), Box<dyn Error>> {
     let out_dir = path::PathBuf::from(env::var("OUT_DIR")?);
 
     let mut include_dir = out_dir.clone();
@@ -120,74 +116,56 @@ fn build_bindings() -> Result<(), Box<dyn Error + 'static>> {
 
 /// Build script entry point
 fn main() -> Result<(), Box<dyn Error>> {
-    let out_dir = env::var("OUT_DIR").unwrap();
-    let triple = Triple::from_str(&env::var("TARGET").unwrap()).unwrap();
+    println!("cargo:rerun-if-changed=xed/VERSION");
 
-    // linker directory
-    let current_dir = env::current_dir().expect("Could not fetch current directory");
-    let lib_dir = {
-        let mut x = path::PathBuf::from(&out_dir);
-        x.push("install");
-        x.push("lib");
-        x
-    };
-    let xed_dir = {
-        let mut x = current_dir.clone();
+    let out_dir = path::PathBuf::from(env::var("OUT_DIR").unwrap());
+
+    // Copy xed directory
+    copy_dir_if_needed("xed", &{
+        let mut x = out_dir.clone();
         x.push("xed");
         x
-    };
-    let mbuild_dir = {
-        let mut x = current_dir.clone();
+    })?;
+
+    // Copy mbuild directory
+    copy_dir_if_needed("mbuild", &{
+        let mut x = out_dir.clone();
         x.push("mbuild");
         x
+    })?;
+
+    // Create install directory
+    let install_dir = {
+        let mut x = out_dir.clone();
+        x.push("install");
+        x
     };
-
-    let mut new_dir = path::PathBuf::from(&out_dir);
-    //dir::remove(new_dir.clone()).err();
-    create_dir(new_dir.clone())?;
-
-    new_dir.push("install");
-    let install_dir = new_dir.clone();
     create_dir(&install_dir)?;
-    new_dir.pop();
-
-    new_dir.push("mbuild");
-    if !new_dir.exists() {
-        overwrite_dir(mbuild_dir, new_dir.clone())?;
-    }
-
-    new_dir.pop();
-    new_dir.push("xed");
-    if !new_dir.exists() {
-        overwrite_dir(xed_dir, new_dir.clone())?;
-    }
-
-    new_dir.pop();
-    env::set_current_dir(new_dir.clone())?;
-
-    // Ignore changes in all other files except build.rs
-    println!("cargo:rerun-if-changed=build.rs");
 
     let python_check = Command::new("python").arg("-V").output();
-
-    if python_check.is_err() {
-        println!("Unable to run python! Python is required to build xed.");
-        ::std::process::exit(1);
-    }
+    handle_err(python_check, "Python is required to build xed.");
 
     // Set locale to C to avoid user language setting interference
     env::set_var("LC_ALL", "C");
 
-    // Build the project
-    let output = Command::new("python").arg("mfile.py")
+    // Set current directory to OUR_DIR
+    env::set_current_dir(&out_dir)?;
+
+    // Build xed
+    let output = Command::new("python")
+        .arg("mfile.py")
         .arg(format!("--jobs={}", num_cpus::get()))
         .arg("--silent")
         .arg("--static-stripped")
         .arg("--extra-ccflags=-fPIC")
         .arg("--opt=3")
         .arg("--no-werror")
-        //.arg(format!("--toolchain={}", toolchain))
-        .arg(format!("--host-cpu={}", triple.architecture))
+        .arg(format!(
+            "--host-cpu={}",
+            Triple::from_str(&env::var("TARGET").unwrap())
+                .unwrap()
+                .architecture
+        ))
         .arg(format!("--install-dir={}", install_dir.display()))
         .arg("install")
         .current_dir("xed")
@@ -195,13 +173,18 @@ fn main() -> Result<(), Box<dyn Error>> {
     handle_err(output, "Failed to run `mfile.py`");
 
     // Configure linker
+    let lib_dir = {
+        let mut x = install_dir.clone();
+        x.push("lib");
+        x
+    };
     println!(
         "cargo:rustc-link-search=native={}",
         lib_dir.to_string_lossy()
     );
     println!("cargo:rustc-link-lib=static=xed");
 
-    // auto generate bindings
+    // Generate bindings
     build_bindings()?;
 
     Ok(())

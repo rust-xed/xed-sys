@@ -53,7 +53,7 @@ mod tests {
 
     #[test]
     fn test_xed_get_copyright() {
-        let version = unsafe {
+        let copyright = unsafe {
             std::ffi::CStr::from_ptr(xed_version::xed_get_copyright())
                 .to_string_lossy()
                 .to_string()
@@ -61,8 +61,14 @@ mod tests {
 
         assert_eq!(
             "Copyright (C) 2017, Intel Corporation. All rights reserved.",
-            &version
+            &copyright
         );
+    }
+
+    #[test]
+    fn test_xed_version() {
+        let version = unsafe { std::ffi::CStr::from_ptr(xed_version::xed_get_version()) };
+        assert_eq!(xed_interface::XED_GIT_VERSION, version.to_bytes_with_nul());
     }
 
 }
