@@ -35,8 +35,7 @@ mod xed_interface_inner {
 
 #[allow(clippy::all)]
 pub mod xed_interface {
-    pub use crate::c2rust::*;
-    pub use crate::xed_interface_inner::*;
+    pub use crate::{c2rust::*, xed_interface_inner::*};
 }
 
 #[allow(clippy::all)]

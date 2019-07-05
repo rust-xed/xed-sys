@@ -8,6 +8,7 @@ members = [
 name = "xed-sys2"
 version = "0.0.1"
 authors = ["Phantomical"]
+edition = "2018"
 publish = false
 
 [dependencies]

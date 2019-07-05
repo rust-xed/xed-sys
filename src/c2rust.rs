@@ -1277,7 +1277,8 @@ pub unsafe extern "C" fn xed3_operand_set_vex_c4(
 /// registers. But for things that have implicit memops, or no base or index
 /// reg, we must allow the user to set the address width directly.
 /// @param x The #xed_encoder_instruction_t being filled in.
-/// @param width_bits The intended effective address size in bits.  Values: 16, 32 or 64.
+/// @param width_bits The intended effective address size in bits.  Values: 16,
+/// 32 or 64.
 
 pub unsafe extern "C" fn xed3_operand_get_pos_modrm(
     mut d: *const xed_decoded_inst_t,
@@ -1412,8 +1413,8 @@ pub unsafe extern "C" fn xed3_operand_set_imm1(
 // / @ingroup ENCHL
 /// instruction with no operands
 /// @param inst The #xed_encoder_instruction_t to be filled in
-/// @param mode  The xed_state_t including the machine mode and stack address width.
-/// @param iclass The #xed_iclass_enum_t
+/// @param mode  The xed_state_t including the machine mode and stack address
+/// width. @param iclass The #xed_iclass_enum_t
 /// @param effective_operand_width in bits
 
 pub unsafe extern "C" fn xed3_operand_get_imm0(mut d: *const xed_decoded_inst_t) -> xed_bits_t {
@@ -1889,8 +1890,9 @@ pub unsafe extern "C" fn xed_seg0(mut seg0: xed_reg_enum_t) -> xed_encoder_opera
     // / @name xed_inst_t Template Operand Read/Written
     //@{
     /// @ingroup DEC
-    /// DEPRECATED: Returns the raw R/W action. There are many cases for conditional reads
-    /// and writes. See #xed_decoded_inst_operand_action().
+    /// DEPRECATED: Returns the raw R/W action. There are many cases for
+    /// conditional reads and writes. See
+    /// #xed_decoded_inst_operand_action().
     let mut o: xed_encoder_operand_t = xed_encoder_operand_t {
         type_: XED_ENCODER_OPERAND_TYPE_INVALID,
         u: xed_encoder_operand_t__bindgen_ty_1 {
@@ -1921,7 +1923,8 @@ pub unsafe extern "C" fn xed_mem_b(
     mut width_bits: xed_uint_t,
 ) -> xed_encoder_operand_t {
     // / @ingroup DEC
-    /// If the operand is read-and-written, conditional reads and conditional writes
+    /// If the operand is read-and-written, conditional reads and conditional
+    /// writes
     let mut o: xed_encoder_operand_t = xed_encoder_operand_t {
         type_: XED_ENCODER_OPERAND_TYPE_INVALID,
         u: xed_encoder_operand_t__bindgen_ty_1 {
