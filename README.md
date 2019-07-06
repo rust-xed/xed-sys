@@ -6,7 +6,7 @@ Rust FFI bindings for Intel XED.
 
 ```rust
 /// Similar to `examples/xed-min.c` from official Intel XED repository.
-use xed_sys2::xed_interface::*;
+use xed_sys::xed_interface::*;
 
 fn main() {
     unsafe {
@@ -35,7 +35,7 @@ fn main() {
 
 ```toml
 [dependencies]
-xed-sys2 = { git = "https://github.com/rust-xed/xed-sys", branch = "master" }
+xed-sys = { git = "https://github.com/rust-xed/xed-sys", branch = "master" }
 ```
 
 ## Building
