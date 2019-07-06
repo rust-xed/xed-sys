@@ -6,4 +6,4 @@ publish = false
 edition = "2018"
 
 [dependencies]
-xed-sys2 = { path = "../.." }
+xed-sys = { path = "../.." }

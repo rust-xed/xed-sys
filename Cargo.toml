@@ -5,8 +5,8 @@ members = [
 ]
 
 [package]
-name = "xed-sys2"
-version = "0.0.1"
+name = "xed-sys"
+version = "0.2.0"
 authors = ["Phantomical"]
 edition = "2018"
 publish = false
