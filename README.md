@@ -1,5 +1,6 @@
 [![Build Status](https://travis-ci.com/Phantomical/xed-sys.svg?branch=master)](https://travis-ci.com/Phantomical/xed-sys)
 [![Build status](https://ci.appveyor.com/api/projects/status/u6krc5mee7sdjn7a/branch/master?svg=true)](https://ci.appveyor.com/project/Phantomical/xed-sys/branch/master)
+[![Crates.io](https://img.shields.io/crates/v/xed-sys.svg)](https://crates.io/crates/xed-sys)
 
 # xed-sys
 Rust FFI bindings for Intel XED.
