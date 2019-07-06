@@ -1,20 +1,15 @@
 #![allow(unreachable_code, dead_code)]
 
-extern crate bindgen;
-extern crate fs_extra;
-extern crate num_cpus;
-extern crate target_lexicon;
+use std::{
+    env,
+    error::Error,
+    fs, io,
+    path::{self, Path},
+    process::{Command, Output},
+    str::FromStr,
+};
 
-use std::env;
-use std::error::Error;
-use std::fs;
-use std::io;
-use std::path::{self, Path};
-use std::process::{Command, Output};
-use std::str::FromStr;
-
-use fs_extra::dir;
-use fs_extra::error::Result as FsResult;
+use fs_extra::{dir, error::Result as FsResult};
 
 use target_lexicon::Triple;
 
@@ -22,8 +17,8 @@ use target_lexicon::Triple;
 fn handle_err<A: AsRef<str>>(o: io::Result<Output>, cmd: A) -> Output {
     let o = match o {
         Err(e) => {
-            println!("{}", cmd.as_ref());
-            println!("\tIO Error on exec:\n{:?}", e);
+            eprintln!("{}", cmd.as_ref());
+            eprintln!("\tIO Error on exec:\n{:?}", e);
             ::std::process::exit(1);
         }
         Ok(o) => o,
@@ -31,13 +26,13 @@ fn handle_err<A: AsRef<str>>(o: io::Result<Output>, cmd: A) -> Output {
     if !o.status.success() {
         let stderr = String::from_utf8_lossy(o.stderr.as_slice());
         let stdout = String::from_utf8_lossy(o.stdout.as_slice());
-        println!("{}", cmd.as_ref());
+        eprintln!("{}", cmd.as_ref());
         match o.status.code() {
-            Option::Some(x) => println!("\tExit Code: {:?}", x),
+            Option::Some(x) => eprintln!("\tExit Code: {:?}", x),
             _ => {}
         };
-        println!("\tStdErr:\n {}", stderr);
-        println!("\tStdOut:\n {}", stdout);
+        eprintln!("\tStdErr:\n {}", stderr);
+        eprintln!("\tStdOut:\n {}", stdout);
         ::std::process::exit(1);
     }
     o
