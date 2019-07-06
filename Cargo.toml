@@ -8,8 +8,19 @@ members = [
 name = "xed-sys"
 version = "0.2.0"
 authors = ["Phantomical"]
+license = "Apache-2.0"
+description = "Rust FFI bindings for Intel XED."
 edition = "2018"
 publish = false
+repository = "https://github.com/rust-xed/xed-sys"
+readme = "README.md"
+keywords = ["xed", "intel", "x86", "x86_64"]
+categories = ["encoding", "external-ffi-bindings", "hardware-support", "parsing"]
+
+[badges]
+appveyor  = { repository = "rust-xed/xed-sys" }
+travis-ci = { repository = "rust-xed/xed-sys" }
+
 
 [dependencies]
 

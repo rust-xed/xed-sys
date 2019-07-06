@@ -2,7 +2,7 @@
 [![Build status](https://ci.appveyor.com/api/projects/status/u6krc5mee7sdjn7a/branch/master?svg=true)](https://ci.appveyor.com/project/Phantomical/xed-sys/branch/master)
 
 # xed-sys
-Rust bindings for Intel XED.
+Rust FFI bindings for Intel XED.
 
 ```rust
 /// Similar to `examples/xed-min.c` from official Intel XED repository.
