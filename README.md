@@ -32,13 +32,6 @@ fn main() {
 }
 ```
 
-## Cargo.toml setup
-
-```toml
-[dependencies]
-xed-sys = { git = "https://github.com/rust-xed/xed-sys", branch = "master" }
-```
-
 ## Building
 
 In order to build this crate, you need:
