@@ -39,10 +39,11 @@ In order to build this crate, you need:
 * clang ([to build XED](https://intelxed.github.io/build-manual/) and [run bindgen](https://rust-lang.github.io/rust-bindgen/requirements.html#requirements)).
 
 ## Examples
-You can find examples in the examples/ directory which can be compiled and run with Cargo.
-For instance, the following sequence of commands builds and runs the xed-min example:
+You can find usage examples in the examples/ directory.
+
+These examples are meant to be executed with cargo.  For instance, to run the example named `xed_min`:
 
 ```
-cd examples/xed-min
-cargo run
+# cd to the crate's root directory
+cargo run --example xed_min
 ```
