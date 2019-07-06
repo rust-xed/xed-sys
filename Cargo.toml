@@ -11,7 +11,6 @@ authors = ["Phantomical"]
 license = "Apache-2.0"
 description = "Rust FFI bindings for Intel XED."
 edition = "2018"
-publish = false
 repository = "https://github.com/rust-xed/xed-sys"
 readme = "README.md"
 keywords = ["xed", "intel", "x86", "x86_64"]
