@@ -3,7 +3,7 @@
 [![Crates.io](https://img.shields.io/crates/v/xed-sys.svg)](https://crates.io/crates/xed-sys)
 
 # xed-sys
-Rust FFI bindings for Intel XED.
+Rust FFI bindings for [Intel XED](https://intelxed.github.io/).
 
 ```rust
 /// Similar to `examples/xed-min.c` from official Intel XED repository.
@@ -37,8 +37,6 @@ fn main() {
 In order to build this crate, you need:
 * Python version 2.7, 3.4 or later ([to build XED](https://intelxed.github.io/build-manual/)).
 * clang ([to build XED](https://intelxed.github.io/build-manual/) and [run bindgen](https://rust-lang.github.io/rust-bindgen/requirements.html#requirements)).
-
-Alternatively, you may check [.travis.yml](.travis.yml) to see the dependencies installed in the CI setup.
 
 ## Examples
 You can find examples in the examples/ directory which can be compiled and run with Cargo.
