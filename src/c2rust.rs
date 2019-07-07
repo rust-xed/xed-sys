@@ -6,11 +6,16 @@ mod libc {
 
 use crate::xed_interface::*;
 
-pub unsafe extern "C" fn xed_make_uint64(mut hi: u32, mut lo: u32) -> u64 {
-    let mut y: xed_union64_t = xed_union64_t { byte: [0; 8] };
-    y.s.lo32 = lo;
-    y.s.hi32 = hi;
-    return y.r#u64;
+use std::mem::{MaybeUninit};
+
+pub fn xed_make_uint64(mut hi: u32, mut lo: u32) -> u64 {
+    let mut y = MaybeUninit::<xed_union64_t>::uninit();
+    let ptr = y.as_mut_ptr() as *mut xed_union64_t as *mut u32;
+    unsafe {
+        ptr.write(lo);
+        ptr.add(1).write(hi);
+        (*(y.as_ptr())).r#u64
+    }
 }
 
 pub unsafe extern "C" fn xed_make_int64(mut hi: u32, mut lo: u32) -> i64 {
@@ -1165,7 +1170,7 @@ pub unsafe extern "C" fn xed3_operand_set_zeroing(
 ////////////////////////////////////////////////////
 /// @name Encoding
 //@{
-/// @ingroup OPERANDS    
+/// @ingroup OPERANDS
 
 pub unsafe extern "C" fn xed3_operand_get_srm(mut d: *const xed_decoded_inst_t) -> xed_bits_t {
     return (*d)._operands.srm as xed_bits_t;
@@ -1297,7 +1302,7 @@ pub unsafe extern "C" fn xed3_operand_get_bcast(mut d: *const xed_decoded_inst_t
     return (*d)._operands.bcast as xed_bits_t;
 }
 // / takes bytes, not bits, as an argument
-/// @ingroup OPERANDS    
+/// @ingroup OPERANDS
 
 pub unsafe extern "C" fn xed3_operand_set_bcast(
     mut d: *mut xed_decoded_inst_t,
