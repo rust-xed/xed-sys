@@ -20,11 +20,11 @@ fn main() {
         ];
 
         for bytes in 0..16 {
-            let mut xedd: xed_decoded_inst_t = ::std::mem::uninitialized();
-            xed_decoded_inst_zero(&mut xedd);
-            xed_decoded_inst_set_mode(&mut xedd, mmode, stack_addr_width);
+            let mut xedd = ::std::mem::MaybeUninit::<xed_decoded_inst_t>::uninit();
+            xed_decoded_inst_zero(xedd.as_mut_ptr());
+            xed_decoded_inst_set_mode(xedd.as_mut_ptr(), mmode, stack_addr_width);
 
-            let xed_error: xed_error_enum_t = xed_decode(&mut xedd, itext.as_ptr(), bytes);
+            let xed_error: xed_error_enum_t = xed_decode(xedd.as_mut_ptr(), itext.as_ptr(), bytes);
             let desc = std::ffi::CStr::from_ptr(xed_error_enum_t2str(xed_error)).to_string_lossy();
             println!("bytes={} error={}", bytes, desc);
         }
