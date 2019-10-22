@@ -21,4 +21,4 @@ travis-ci = { repository = "rust-xed/xed-sys" }
 bindgen = "0.43"
 fs_extra = "1.1"
 num_cpus = "1.8"
-target-lexicon = "0.2"
+target-lexicon = "0.8"
