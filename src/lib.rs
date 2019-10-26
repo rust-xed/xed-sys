@@ -60,8 +60,13 @@ mod tests {
 
     #[test]
     fn test_xed_version() {
-        let version = unsafe { std::ffi::CStr::from_ptr(xed_version::xed_get_version()) };
-        assert_eq!(xed_interface::XED_GIT_VERSION, version.to_bytes_with_nul());
+        use std::ffi::CStr;
+
+        let version_cstr = unsafe { CStr::from_ptr(xed_version::xed_get_version()) };
+        let version = version_cstr.to_string_lossy();
+        let git_version = CStr::from_bytes_with_nul(xed_interface::XED_GIT_VERSION).unwrap().to_string_lossy();
+
+        assert_eq!(version, git_version);
     }
 
 }
