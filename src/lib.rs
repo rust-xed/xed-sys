@@ -27,9 +27,6 @@ mod c2rust;
 
 #[allow(clippy::all)]
 mod xed_interface_inner {
-    #[cfg(target_env = "msvc")]
-    include!("xed_interface.rs");
-    #[cfg(not(target_env = "msvc"))]
     include!(concat!(env!("OUT_DIR"), "/xed_interface.rs"));
 }
 
@@ -40,9 +37,6 @@ pub mod xed_interface {
 
 #[allow(clippy::all)]
 pub mod xed_version {
-    #[cfg(target_env = "msvc")]
-    include!("xed_version.rs");
-    #[cfg(not(target_env = "msvc"))]
     include!(concat!(env!("OUT_DIR"), "/xed_version.rs"));
 }
 
