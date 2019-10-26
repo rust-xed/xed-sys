@@ -19,6 +19,4 @@ travis-ci = { repository = "rust-xed/xed-sys" }
 
 [build-dependencies]
 bindgen = "0.51"
-fs_extra = "1.1"
-num_cpus = "1.10"
 target-lexicon = "0.8"

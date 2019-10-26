@@ -1,42 +1,13 @@
-#![allow(unreachable_code, dead_code)]
-
 use std::{
     env,
     error::Error,
     fs, io,
-    path::{self, Path},
-    process::{Command, Output},
+    path::{self, Path, PathBuf},
+    process::Command,
     str::FromStr,
 };
 
-use fs_extra::{dir, error::Result as FsResult};
-
 use target_lexicon::Triple;
-
-/// Prints stuff about error
-fn handle_err<A: AsRef<str>>(o: io::Result<Output>, cmd: A) -> Output {
-    let o = match o {
-        Err(e) => {
-            eprintln!("{}", cmd.as_ref());
-            eprintln!("\tIO Error on exec:\n{:?}", e);
-            ::std::process::exit(1);
-        }
-        Ok(o) => o,
-    };
-    if !o.status.success() {
-        let stderr = String::from_utf8_lossy(o.stderr.as_slice());
-        let stdout = String::from_utf8_lossy(o.stdout.as_slice());
-        eprintln!("{}", cmd.as_ref());
-        match o.status.code() {
-            Option::Some(x) => eprintln!("\tExit Code: {:?}", x),
-            _ => {}
-        };
-        eprintln!("\tStdErr:\n {}", stderr);
-        eprintln!("\tStdOut:\n {}", stdout);
-        ::std::process::exit(1);
-    }
-    o
-}
 
 const BINDGEN_JOBS: &'_ [(&'_ str, &'_ str)] = &[
     ("install/include/xed/xed-interface.h", "xed_interface.rs"),
@@ -50,18 +21,6 @@ fn create_dir<P: AsRef<Path>>(path: P) -> io::Result<()> {
     })
 }
 
-fn copy_dir_if_needed<P1: AsRef<Path>, P2: AsRef<Path>>(src: P1, dest: P2) -> FsResult<u64> {
-    dir::copy(
-        src,
-        dest,
-        &dir::CopyOptions {
-            overwrite: true,
-            copy_inside: true,
-            ..dir::CopyOptions::new()
-        },
-    )
-}
-
 /// Autogenerates bindings
 fn build_bindings() -> Result<(), Box<dyn Error>> {
     let out_dir = path::PathBuf::from(env::var("OUT_DIR")?);
@@ -71,16 +30,13 @@ fn build_bindings() -> Result<(), Box<dyn Error>> {
     include_dir.push("include");
 
     for job in BINDGEN_JOBS {
-        let mut dot_h = out_dir.clone();
-        dot_h.push(job.0);
-
-        let mut dot_rs = out_dir.clone();
-        dot_rs.push(job.1);
+        let dot_h = out_dir.join(job.0);
+        let dot_rs = out_dir.join(job.1);
 
         let bindings = match bindgen::Builder::default()
             .clang_arg(format!("--include-directory={}", include_dir.display()))
             .clang_arg("-DXED_ENCODER")
-            .clang_arg("-fkeep-inline-functions")
+            .clang_arg("-DXED_DECODER")
             .header(format!("{}", dot_h.display()))
             .impl_debug(true)
             .derive_copy(true)
@@ -109,78 +65,86 @@ fn build_bindings() -> Result<(), Box<dyn Error>> {
     Ok(())
 }
 
-/// Build script entry point
-fn main() -> Result<(), Box<dyn Error>> {
+fn main() {
     println!("cargo:rerun-if-changed=xed/VERSION");
+    println!("cargo:rerun-if-changed=build.rs");
+    println!("cargo:rerun-if-changed-env=OUT_DIR");
+    println!("cargo:rerun-if-changed-env=TARGET");
+    println!("cargo:rerun-if-changed-env=PROFILE");
 
-    let out_dir = path::PathBuf::from(env::var("OUT_DIR").unwrap());
+    let out_dir = PathBuf::from(env::var("OUT_DIR").expect("Failed to read OUT_DIR"));
+    let cwd = env::current_dir().expect("Failed to get CWD");
+    let target = env::var("TARGET").expect("Failed to read TARGET");
+    let profile = env::var("PROFILE").unwrap_or_else(|_| "debug".to_owned());
 
-    // Copy xed directory
-    copy_dir_if_needed("xed", &{
-        let mut x = out_dir.clone();
-        x.push("xed");
-        x
-    })?;
+    // Ensure python exists and can run
+    match Command::new("python").arg("-V").output() {
+        Ok(output) => {
+            if !output.status.success() {
+                panic!("'python -V' returned with an error");
+            }
+        }
+        Err(e) => {
+            panic!("Python is required to run xed: {}", e);
+        }
+    }
 
-    // Copy mbuild directory
-    copy_dir_if_needed("mbuild", &{
-        let mut x = out_dir.clone();
-        x.push("mbuild");
-        x
-    })?;
+    let install_dir = out_dir.join("install");
+    let build_dir = out_dir.join("build");
+    let mfile_path = cwd.join("xed/mfile.py");
 
-    // Create install directory
-    let install_dir = {
-        let mut x = out_dir.clone();
-        x.push("install");
-        x
-    };
-    create_dir(&install_dir)?;
+    create_dir(&install_dir).expect(&format!(
+        "Failed to create directory '{}'",
+        install_dir.display()
+    ));
+    create_dir(&build_dir).expect(&format!(
+        "Failed to create directory '{}'",
+        build_dir.display()
+    ));
 
-    let python_check = Command::new("python").arg("-V").output();
-    handle_err(python_check, "Python is required to build xed.");
-
-    // Set locale to C to avoid user language setting interference
+    // Set locale to C to avoid user language settings interference
     env::set_var("LC_ALL", "C");
 
-    // Set current directory to OUR_DIR
-    env::set_current_dir(&out_dir)?;
+    env::set_current_dir(&build_dir).unwrap();
 
-    // Build xed
-    let output = Command::new("python")
-        .arg("mfile.py")
-        .arg(format!("--jobs={}", num_cpus::get()))
+    let num_jobs: u32 = env::var("NUM_JOBS").unwrap().parse().unwrap_or(1);
+
+    let mut cmd = Command::new("python");
+    cmd.arg(&mfile_path)
+        .arg(format!("--jobs={}", num_jobs))
         .arg("--silent")
         .arg("--static-stripped")
         .arg("--extra-ccflags=-fPIC")
-        .arg("--opt=3")
         .arg("--no-werror")
         .arg(format!(
             "--host-cpu={}",
-            Triple::from_str(&env::var("TARGET").unwrap())
-                .unwrap()
+            Triple::from_str(&target)
+                .expect("TARGET was not a valid target triple")
                 .architecture
         ))
-        .arg(format!("--install-dir={}", install_dir.display()))
-        .arg("install")
-        .current_dir("xed")
-        .output();
-    handle_err(output, "Failed to run `mfile.py`");
+        .arg(format!("--install-dir={}", install_dir.display()));
 
-    // Configure linker
-    let lib_dir = {
-        let mut x = install_dir.clone();
-        x.push("lib");
-        x
-    };
-    println!(
-        "cargo:rustc-link-search=native={}",
-        lib_dir.to_string_lossy()
-    );
+    if profile == "release" {
+        cmd.arg("--opt=3");
+    } else {
+        cmd.arg("--opt=0");
+    }
+
+    cmd.arg("install").current_dir(&build_dir);
+
+    eprintln!("XED build command: {:?}", cmd);
+
+    let status = cmd.status().expect("Failed to start xed build");
+
+    if !status.success() {
+        panic!("Building xed failed");
+    }
+
+    let lib_dir = install_dir.join("lib");
+
+    println!("cargo:rustc-link-search=native={}", lib_dir.display());
     println!("cargo:rustc-link-lib=static=xed");
 
     // Generate bindings
-    build_bindings()?;
-
-    Ok(())
+    build_bindings().expect("Failed to generate bindings");
 }
