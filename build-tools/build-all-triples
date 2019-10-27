@@ -1,0 +1,29 @@
+#!/usr/bin/env bash
+
+TRIPLES=(
+  i686-apple-darwin
+  i686-pc-windows-gnu
+  i686-pc-windows-msvc
+  i686-unknown-linux-gnu
+  x86_64-pc-windows-gnu
+  x86_64-pc-windows-msvc
+  x86_64-unknown-linux-gnu
+)
+
+export RUST_BACKTRACE=1
+
+mkdir -p target/artifacts
+OUT_DIR=$(pwd)/target cargo run --bin build-xed
+
+for triple in "${TRIPLES[@]}"; do
+  clang -E -P -CC xed.c -o target/artifacts/xed-$triple.i -Itarget/install/include -Dstatic= -Dinline= -D__inline= -D__inline__=
+
+  echo '[{ "directory": ".", "command": "", "file": "target/artifacts/xed-'$triple'.i" }]' > compile-commands.json
+  c2rust transpile --overwrite-existing compile-commands.json
+
+  lower_triple=$(echo $triple | sed 's/-/_/g')
+  cargo run --bin remove-methods -- target/artifacts/xed_$lower_triple.rs target/xed-$triple.rs
+  rustfmt target/xed-$triple.rs
+done
+
+rm compile-commands.json
