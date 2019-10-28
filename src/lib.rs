@@ -17,25 +17,58 @@
     no_mangle_const_items,
     non_upper_case_globals,
     unreachable_code,
-    intra_doc_link_resolution_failure
+    intra_doc_link_resolution_failure,
+    clippy::all
 )]
 
 extern crate core;
 
-#[allow(clippy::all)]
-mod c2rust;
+// TODO: If we support no_std we should just import
+//       the actual libc crate here or something that
+//       exports ctypes such as the cty crate.
+mod libc {
+    pub(crate) use std::os::raw::*;
+}
 
-#[allow(clippy::all)]
+mod c2rust {
+    #![allow(
+        unused_variables,
+        unused_assignments,
+        unused_mut
+    )]
+
+    use crate::libc;
+    use crate::xed_interface_inner::*;
+
+    // The c2rust conversion produces code that uses these,
+    // luckily binding them manually is pretty easy.
+    type uint8_t = u8;
+    type uint16_t = u16;
+    type uint32_t = u32;
+    type uint64_t = u64;
+
+    type int8_t = i8;
+    type int16_t = i16;
+    type int32_t = i32;
+    type int64_t = i64;
+
+    // Manually fix up differences in anonymous type naming
+    // conventions between c2rust and bindgen.
+    // This should break pretty loudly if it becomes wrong
+    // with a new version of XED.
+    type C2RustUnnamed_6 = xed_encoder_operand_t__bindgen_ty_1;
+
+    include!("xed-c2rust.rs");
+}
+
 mod xed_interface_inner {
     include!(concat!(env!("OUT_DIR"), "/xed_interface.rs"));
 }
 
-#[allow(clippy::all)]
 pub mod xed_interface {
     pub use crate::{c2rust::*, xed_interface_inner::*};
 }
 
-#[allow(clippy::all)]
 pub mod xed_version {
     include!(concat!(env!("OUT_DIR"), "/xed_version.rs"));
 }
