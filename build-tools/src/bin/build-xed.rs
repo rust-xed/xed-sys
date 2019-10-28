@@ -59,9 +59,7 @@ fn main() {
         .arg("--static-stripped")
         .arg("--extra-ccflags=-fPIC")
         .arg("--no-werror")
-        .arg(format!("--install-dir={}", install_dir.display()))
-        .arg("--knc");
-        //.arg("--knl");
+        .arg(format!("--install-dir={}", install_dir.display()));
 
     if profile == "release" {
         cmd.arg("--opt=3");
