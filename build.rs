@@ -45,7 +45,6 @@ fn build_bindings() -> Result<(), Box<dyn Error>> {
             .derive_copy(true)
             .derive_debug(true)
             .prepend_enum_name(false)
-            .generate_inline_functions(true)
             .generate()
         {
             Ok(x) => x,
