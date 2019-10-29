@@ -1,18 +1,11 @@
 use std::{
-    env,
-    error::Error,
-    fs, io,
-    path::{self, Path, PathBuf},
+    env, fs, io,
+    path::{Path, PathBuf},
     process::Command,
     str::FromStr,
 };
 
 use target_lexicon::Triple;
-
-const BINDGEN_JOBS: &'_ [(&'_ str, &'_ str)] = &[
-    ("install/include/xed/xed-interface.h", "xed_interface.rs"),
-    ("install/include/xed/xed-version.h", "xed_version.rs"),
-];
 
 fn create_dir<P: AsRef<Path>>(path: P) -> io::Result<()> {
     fs::create_dir(path).or_else(|e| match e.kind() {
@@ -22,49 +15,42 @@ fn create_dir<P: AsRef<Path>>(path: P) -> io::Result<()> {
 }
 
 /// Autogenerates bindings
-fn build_bindings() -> Result<(), Box<dyn Error>> {
-    let out_dir = path::PathBuf::from(env::var("OUT_DIR")?);
+fn build_bindings() {
+    let out_dir = PathBuf::from(env::var("OUT_DIR").unwrap());
+    let include_dir = out_dir.join("install/include");
 
-    let mut include_dir = out_dir.clone();
-    include_dir.push("install");
-    include_dir.push("include");
+    let dot_h = out_dir.join("install/include/xed/xed-interface.h");
+    let dot_rs = out_dir.join("xed_interface.rs");
 
-    for job in BINDGEN_JOBS {
-        let dot_h = out_dir.join(job.0);
-        let dot_rs = out_dir.join(job.1);
-
-        let bindings = match bindgen::Builder::default()
-            .clang_arg(format!("--include-directory={}", include_dir.display()))
-            .clang_arg("-DXED_ENCODER")
-            .clang_arg("-DXED_DECODER")
-            .whitelist_type("xed3?_.*")
-            .whitelist_function("(str2)?xed3?_.*")
-            .whitelist_var("(XED|xed)_.*")
-            .header(format!("{}", dot_h.display()))
-            .impl_debug(true)
-            .derive_copy(true)
-            .derive_debug(true)
-            .prepend_enum_name(false)
-            .generate()
-        {
-            Ok(x) => x,
-            Err(e) => panic!(
-                "Could not generate bindings for {}. Error {:?}",
-                dot_h.display(),
-                e
-            ),
-        };
-        match bindings.write_to_file(&dot_rs) {
-            Ok(_) => {}
-            Err(e) => panic!(
-                "Could not write generated bindings to {}. Error {:?}",
-                dot_rs.display(),
-                e
-            ),
-        };
-    }
-
-    Ok(())
+    let bindings = match bindgen::Builder::default()
+        .clang_arg(format!("--include-directory={}", include_dir.display()))
+        .clang_arg("-DXED_ENCODER")
+        .clang_arg("-DXED_DECODER")
+        .whitelist_type("xed3?_.*")
+        .whitelist_function("(str2)?xed3?_.*")
+        .whitelist_var("(XED|xed)_.*")
+        .header(format!("{}", dot_h.display()))
+        .impl_debug(true)
+        .derive_copy(true)
+        .derive_debug(true)
+        .prepend_enum_name(false)
+        .generate()
+    {
+        Ok(x) => x,
+        Err(e) => panic!(
+            "Could not generate bindings for {}. Error {:?}",
+            dot_h.display(),
+            e
+        ),
+    };
+    match bindings.write_to_file(&dot_rs) {
+        Ok(_) => {}
+        Err(e) => panic!(
+            "Could not write generated bindings to {}. Error {:?}",
+            dot_rs.display(),
+            e
+        ),
+    };
 }
 
 fn main() {
@@ -148,5 +134,5 @@ fn main() {
     println!("cargo:rustc-link-lib=static=xed");
 
     // Generate bindings
-    build_bindings().expect("Failed to generate bindings");
+    build_bindings();
 }

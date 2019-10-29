@@ -2,8 +2,8 @@ use std::env;
 use std::fs::File;
 use std::io::{Read, Write};
 
-use syn::parse_quote;
 use quote::quote;
+use syn::parse_quote;
 
 fn main() {
     let args = env::args().collect::<Vec<_>>();
@@ -30,9 +30,7 @@ fn main() {
     for item in syntax.items {
         match item {
             syn::Item::Fn(mut func) => {
-                func.attrs = vec![
-                    parse_quote!{ #[inline] }
-                ];
+                func.attrs = vec![parse_quote! { #[inline] }];
 
                 let tokens = quote! { #func };
 

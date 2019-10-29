@@ -31,11 +31,7 @@ mod libc {
 }
 
 mod c2rust {
-    #![allow(
-        unused_variables,
-        unused_assignments,
-        unused_mut
-    )]
+    #![allow(unused_variables, unused_assignments, unused_mut)]
 
     use crate::libc;
     use crate::xed_interface_inner::*;
@@ -70,7 +66,7 @@ pub mod xed_interface {
 }
 
 pub mod xed_version {
-    include!(concat!(env!("OUT_DIR"), "/xed_version.rs"));
+    pub use crate::xed_interface_inner::{xed_get_copyright, xed_get_version};
 }
 
 #[cfg(test)]
@@ -97,9 +93,10 @@ mod tests {
 
         let version_cstr = unsafe { CStr::from_ptr(xed_version::xed_get_version()) };
         let version = version_cstr.to_string_lossy();
-        let git_version = CStr::from_bytes_with_nul(xed_interface::XED_GIT_VERSION).unwrap().to_string_lossy();
+        let git_version = CStr::from_bytes_with_nul(xed_interface::XED_GIT_VERSION)
+            .unwrap()
+            .to_string_lossy();
 
         assert_eq!(version, git_version);
     }
-
 }

@@ -1,6 +1,5 @@
 use std::{
-    env,
-    fs, io,
+    env, fs, io,
     path::{Path, PathBuf},
     process::Command,
 };
