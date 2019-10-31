@@ -98,7 +98,10 @@ fn main() {
     let num_jobs: u32 = env::var("NUM_JOBS").unwrap().parse().unwrap_or(1);
 
     let mut cmd = Command::new("python");
-    cmd.arg(&mfile_path)
+    cmd
+        // The -B flag prevents python from generating .pyc files
+        .arg("-B")
+        .arg(&mfile_path)
         .arg(format!("--jobs={}", num_jobs))
         .arg("--silent")
         .arg("--static-stripped")
