@@ -53,6 +53,26 @@ fn build_bindings() {
     };
 }
 
+fn find_python() -> &'static str {
+    if let Ok(status) = Command::new("python3").arg("-V").status() {
+        if !status.success() {
+            panic!("'python3 -V' exited with an error");
+        }
+
+        return "python3";
+    }
+
+    if let Ok(status) = Command::new("python").arg("-V").status() {
+        if !status.success() {
+            panic!("'python -V' exited with an error");
+        }
+
+        return "python";
+    }
+
+    panic!("Unable to find a working python installation");
+}
+
 fn main() {
     println!("cargo:rerun-if-changed=xed/VERSION");
     println!("cargo:rerun-if-changed=build.rs");
@@ -95,9 +115,13 @@ fn main() {
 
     env::set_current_dir(&build_dir).unwrap();
 
-    let num_jobs: u32 = env::var("NUM_JOBS").unwrap().parse().unwrap_or(1);
+    let num_jobs: u32 = env::var("NUM_JOBS")
+        .unwrap_or_else(|_| "1".to_owned())
+        .parse()
+        .unwrap_or(1);
 
-    let mut cmd = Command::new("python");
+    let python = find_python();
+    let mut cmd = Command::new(python);
     cmd
         // The -B flag prevents python from generating .pyc files
         .arg("-B")
@@ -113,7 +137,8 @@ fn main() {
                 .expect("TARGET was not a valid target triple")
                 .architecture
         ))
-        .arg(format!("--install-dir={}", install_dir.display()));
+        .arg(format!("--install-dir={}", install_dir.display()))
+        .env("PYTHONDONTWRITEBYTECODE", "x");
 
     if profile == "release" {
         cmd.arg("--opt=3");
