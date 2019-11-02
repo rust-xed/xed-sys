@@ -1,6 +1,6 @@
 [package]
 name = "xed-sys"
-version = "0.2.4"
+version = "0.3.0"
 authors = ["Phantomical", "Agustin Godnic"]
 license = "Apache-2.0"
 description = "Rust FFI bindings for Intel XED."
@@ -13,7 +13,6 @@ categories = ["encoding", "external-ffi-bindings", "hardware-support", "parsing"
 [badges]
 appveyor  = { repository = "rust-xed/xed-sys" }
 travis-ci = { repository = "rust-xed/xed-sys" }
-
 
 [dependencies]
 
