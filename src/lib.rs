@@ -2,24 +2,10 @@
 //!
 //! For the real docs see: https://intelxed.github.io
 //!
-//! Note that `xed_tables_init()` must be called before
+//! Note that [`xed_tables_init()`][0] must be called before
 //! using the library.
-
-#![allow(
-    non_snake_case,
-    dead_code,
-    non_camel_case_types,
-    const_err,
-    improper_ctypes,
-    path_statements,
-    unused_parens,
-    unused_unsafe,
-    no_mangle_const_items,
-    non_upper_case_globals,
-    unreachable_code,
-    intra_doc_link_resolution_failure,
-    clippy::all
-)]
+//! 
+//! [0]: crate::xed_tables_init
 
 extern crate core;
 
@@ -48,13 +34,24 @@ mod _detail {
     }
 
     pub(crate) mod c2rust {
-        #![allow(unused_variables, unused_assignments, unused_mut)]
+        #![allow(
+            clippy::all,
+            dead_code,
+            non_camel_case_types,
+            unused_variables, 
+            unused_assignments, 
+            unused_mut,
+        )]
 
         use super::libc;
         use super::xed_interface_inner::*;
 
         // The c2rust conversion produces code that uses these,
         // luckily binding them manually is pretty easy.
+        // 
+        // Some of these are never used but we keep them to that
+        // we don't have to make any changes if a future version
+        // of XED requires them.
         type uint8_t = u8;
         type uint16_t = u16;
         type uint32_t = u32;
@@ -71,10 +68,19 @@ mod _detail {
         // with a new version of XED.
         type C2RustUnnamed_6 = xed_encoder_operand_t__bindgen_ty_1;
 
+        // Note: Can't use a module here since we need to insert
+        //       types into the namespace of the generated code.
         include!("xed-c2rust.rs");
     }
 
     pub(crate) mod xed_interface_inner {
+        #![allow(
+            clippy::all,
+            non_camel_case_types,
+            non_snake_case,
+            non_upper_case_globals,
+        )]
+
         include!(concat!(env!("OUT_DIR"), "/xed_interface.rs"));
     }
 
