@@ -15,25 +15,32 @@ fn create_dir<P: AsRef<Path>>(path: P) -> io::Result<()> {
 }
 
 /// Autogenerates bindings
-fn build_bindings() {
+fn build_bindings(cwd: &Path) {
     let out_dir = PathBuf::from(env::var("OUT_DIR").unwrap());
     let include_dir = out_dir.join("install/include");
 
-    let dot_h = out_dir.join("install/include/xed/xed-interface.h");
+    let dot_h = cwd.join("xed.h");
     let dot_rs = out_dir.join("xed_interface.rs");
 
-    let bindings = match bindgen::Builder::default()
+    eprintln!("{}", cwd.display());
+
+    let builder = bindgen::Builder::default()
         .clang_arg(format!("--include-directory={}", include_dir.display()))
         .clang_arg("-DXED_ENCODER")
         .clang_arg("-DXED_DECODER")
         .whitelist_type("xed3?_.*")
         .whitelist_function("(str2)?xed3?_.*")
+        .whitelist_function("xed_isa_set_is_valid_for_chip")
         .whitelist_var("(XED|xed)_.*")
         .header(format!("{}", dot_h.display()))
         .impl_debug(true)
         .derive_copy(true)
         .derive_debug(true)
-        .prepend_enum_name(false)
+        .prepend_enum_name(false);
+    
+    builder.dump_preprocessed_input().unwrap();
+
+    let bindings = match builder
         .generate()
     {
         Ok(x) => x,
@@ -162,5 +169,5 @@ fn main() {
     println!("cargo:rustc-link-lib=static=xed");
 
     // Generate bindings
-    build_bindings();
+    build_bindings(&cwd);
 }
