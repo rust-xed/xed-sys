@@ -71,7 +71,7 @@ fn find_python() -> &'static str {
         }
     }
 
-    panic!("Unable to find a working python installation");
+    panic!("Unable to find a working python installation. Tried `python3` and `python`.");
 }
 
 fn main() {
