@@ -5,10 +5,10 @@ authors = ["Phantomical", "Agustin Godnic"]
 edition = "2018"
 
 [dependencies]
-bindgen = "0.51"
+bindgen = "0.54"
 fs_extra = "1.1"
 num_cpus = "1.10"
-target-lexicon = "0.8"
+target-lexicon = "0.10"
 
 syn = { version = "1.0", features = [ "full" ] }
 quote = "1.0"
