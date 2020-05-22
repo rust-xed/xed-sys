@@ -1376,17 +1376,6 @@ pub unsafe extern "C" fn xed3_operand_set_vl(
     (*d)._operands.vl = opval as uint8_t;
 }
 #[inline]
-pub unsafe extern "C" fn xed3_operand_get_vlx(mut d: *const xed_decoded_inst_t) -> xed_bits_t {
-    return (*d)._operands.vlx as xed_bits_t;
-}
-#[inline]
-pub unsafe extern "C" fn xed3_operand_set_vlx(
-    mut d: *mut xed_decoded_inst_t,
-    mut opval: xed_bits_t,
-) {
-    (*d)._operands.vlx = opval as uint8_t;
-}
-#[inline]
 pub unsafe extern "C" fn xed3_operand_get_vex_prefix(
     mut d: *const xed_decoded_inst_t,
 ) -> xed_bits_t {
