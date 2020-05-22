@@ -4,7 +4,7 @@
 //!
 //! Note that [`xed_tables_init()`][0] must be called before
 //! using the library.
-//! 
+//!
 //! [0]: crate::xed_tables_init
 
 extern crate core;
@@ -38,9 +38,9 @@ mod _detail {
             clippy::all,
             dead_code,
             non_camel_case_types,
-            unused_variables, 
-            unused_assignments, 
-            unused_mut,
+            unused_variables,
+            unused_assignments,
+            unused_mut
         )]
 
         use super::libc;
@@ -48,7 +48,7 @@ mod _detail {
 
         // The c2rust conversion produces code that uses these,
         // luckily binding them manually is pretty easy.
-        // 
+        //
         // Some of these are never used but we keep them to that
         // we don't have to make any changes if a future version
         // of XED requires them.
@@ -78,7 +78,7 @@ mod _detail {
             clippy::all,
             non_camel_case_types,
             non_snake_case,
-            non_upper_case_globals,
+            non_upper_case_globals
         )]
 
         include!(concat!(env!("OUT_DIR"), "/xed_interface.rs"));
@@ -97,7 +97,7 @@ mod _detail {
             };
 
             assert_eq!(
-                "Copyright (C) 2017, Intel Corporation. All rights reserved.",
+                "Copyright (C) 2019, Intel Corporation. All rights reserved.",
                 &copyright
             );
         }
