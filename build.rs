@@ -58,16 +58,33 @@ fn build_bindings(cwd: &Path) {
     };
 }
 
-fn find_python() -> &'static str {
+fn find_python() -> Command {
+    // Check for pylauncher first since it is the most accurate way to get the
+    // newest version of python.
+    //
+    // This is more relevant on windows but it can also be installed on linux.
+    if let Ok(status) = Command::new("py").arg("-3").arg("-V").status() {
+        if status.success() {
+            let mut cmd = Command::new("py");
+            cmd.arg("-3");
+            return cmd;
+        }
+    }
+    
+    // Next check for an explicit python3 installation.
     if let Ok(status) = Command::new("python3").arg("-V").status() {
         if status.success() {
-            return "python3";
+            return Command::new("python3");
         }
     }
 
+    // Finally just try and run python. If the version is
+    // too old (e.g. python generally means python2 on linux)
+    // then we'll fail later on. On windows it's generally
+    // likely to see python as just plain python.
     if let Ok(status) = Command::new("python").arg("-V").status() {
         if status.success() {
-            return "python";
+            return Command::new("python");
         }
     }
 
@@ -109,8 +126,7 @@ fn main() {
         .parse()
         .unwrap_or(1);
 
-    let python = find_python();
-    let mut cmd = Command::new(python);
+    let mut cmd = find_python();
     cmd
         // The -B flag prevents python from generating .pyc files
         .arg("-B")

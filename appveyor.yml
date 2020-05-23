@@ -25,6 +25,7 @@ install:
   - rustc -vV
   - cargo -vV
   - rustup component add clippy
+  - py -0p
 
 build: false
 
