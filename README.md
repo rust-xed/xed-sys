@@ -7,7 +7,7 @@ Rust FFI bindings for [Intel XED](https://intelxed.github.io/).
 
 ```rust
 /// Similar to `examples/xed-min.c` from official Intel XED repository.
-use xed_sys::xed_interface::*;
+use xed_sys::*;
 
 fn main() {
     unsafe {

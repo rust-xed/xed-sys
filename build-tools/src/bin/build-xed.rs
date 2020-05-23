@@ -94,6 +94,4 @@ fn main() {
     if !status.success() {
         panic!("Building xed failed");
     }
-
-    let lib_dir = install_dir.join("lib");
 }
