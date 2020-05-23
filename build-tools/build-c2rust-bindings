@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
 
 export RUST_BACKTRACE=1
-export PYTHONDONTWRITEBYTECODE=x
 
 mkdir -p target/artifacts
 OUT_DIR=$(pwd)/target cargo run --bin build-xed
