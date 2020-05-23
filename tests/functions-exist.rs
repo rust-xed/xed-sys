@@ -1,4 +1,4 @@
-use xed_sys::xed_interface::*;
+use xed_sys::*;
 
 #[test]
 fn functions_exist() {
