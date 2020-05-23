@@ -37,12 +37,10 @@ fn build_bindings(cwd: &Path) {
         .derive_copy(true)
         .derive_debug(true)
         .prepend_enum_name(false);
-    
+
     builder.dump_preprocessed_input().unwrap();
 
-    let bindings = match builder
-        .generate()
-    {
+    let bindings = match builder.generate() {
         Ok(x) => x,
         Err(e) => panic!(
             "Could not generate bindings for {}. Error {:?}",
@@ -62,22 +60,18 @@ fn build_bindings(cwd: &Path) {
 
 fn find_python() -> &'static str {
     if let Ok(status) = Command::new("python3").arg("-V").status() {
-        if !status.success() {
-            panic!("'python3 -V' exited with an error");
+        if status.success() {
+            return "python3";
         }
-
-        return "python3";
     }
 
     if let Ok(status) = Command::new("python").arg("-V").status() {
-        if !status.success() {
-            panic!("'python -V' exited with an error");
+        if status.success() {
+            return "python";
         }
-
-        return "python";
     }
 
-    panic!("Unable to find a working python installation");
+    panic!("Unable to find a working python installation. Tried `python3` and `python`.");
 }
 
 fn main() {
@@ -91,18 +85,6 @@ fn main() {
     let cwd = env::current_dir().expect("Failed to get CWD");
     let target = env::var("TARGET").expect("Failed to read TARGET");
     let profile = env::var("PROFILE").unwrap_or_else(|_| "debug".to_owned());
-
-    // Ensure python exists and can run
-    match Command::new("python").arg("-V").output() {
-        Ok(output) => {
-            if !output.status.success() {
-                panic!("'python -V' returned with an error");
-            }
-        }
-        Err(e) => {
-            panic!("Python is required to run xed: {}", e);
-        }
-    }
 
     let install_dir = out_dir.join("install");
     let build_dir = out_dir.join("build");
