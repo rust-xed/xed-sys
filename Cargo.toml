@@ -17,7 +17,7 @@ travis-ci = { repository = "rust-xed/xed-sys" }
 [dependencies]
 
 [build-dependencies]
-bindgen = "0.54"
+bindgen = "0.55"
 target-lexicon = "0.11"
 
 [workspace]
