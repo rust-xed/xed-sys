@@ -79,6 +79,7 @@ mod _detail {
             non_camel_case_types,
             non_snake_case,
             non_upper_case_globals,
+            renamed_and_removed_lints, // needed for intra_doc_link_resolution_failure
             intra_doc_link_resolution_failure
         )]
 
