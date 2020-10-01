@@ -70,7 +70,7 @@ fn find_python() -> Command {
             return cmd;
         }
     }
-    
+
     // Next check for an explicit python3 installation.
     if let Ok(status) = Command::new("python3").arg("-V").status() {
         if status.success() {

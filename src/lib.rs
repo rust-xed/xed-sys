@@ -79,7 +79,7 @@ mod _detail {
             non_camel_case_types,
             non_snake_case,
             non_upper_case_globals,
-            intra_doc_link_resolution_failure
+            broken_intra_doc_links
         )]
 
         include!(concat!(env!("OUT_DIR"), "/xed_interface.rs"));

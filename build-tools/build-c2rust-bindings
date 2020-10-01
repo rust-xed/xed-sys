@@ -1,15 +1,16 @@
 #!/usr/bin/env bash
 
-export RUST_BACKTRACE=1
-
-mkdir -p target/artifacts
-OUT_DIR=$(pwd)/target cargo run --bin build-xed
-
 # Every architecture I've tried has given the same result
 # here so either clang's preprocessor ignores target when
 # preprocessing or the generated code is target-independant
 # (at least from a source-code point of view)
 triple=x86_64-unknown-unknown
+
+export RUST_BACKTRACE=1
+export TARGET=$triple
+
+mkdir -p target/artifacts
+OUT_DIR=$(pwd)/target cargo run --bin build-xed
 
 clang -E -P -CC xed.c -o target/artifacts/xed-$triple.i -Itarget/install/include -Dstatic= -Dinline= -D__inline= -D__inline__=
 
@@ -27,8 +28,8 @@ rustfmt target/xed-$triple.rs
 # statements here.
 sed 's/type_0/type_/g' -i target/xed-$triple.rs
 sed 's/mod_0/mod_/g' -i target/xed-$triple.rs
-sed 's/i64_0/i64/g' -i target/xed-$triple.rs
-sed 's/u64_0/u64/g' -i target/xed-$triple.rs
+sed 's/i64_0/i64_/g' -i target/xed-$triple.rs
+sed 's/u64_0/u64_/g' -i target/xed-$triple.rs
 
 cp -f target/xed-$triple.rs ../src/xed-c2rust.rs
 

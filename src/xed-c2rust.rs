@@ -3,14 +3,14 @@ pub unsafe extern "C" fn xed_make_uint64(mut hi: uint32_t, mut lo: uint32_t) -> 
     let mut y: xed_union64_t = xed_union64_t { byte: [0; 8] };
     y.s.lo32 = lo;
     y.s.hi32 = hi;
-    return y.u64;
+    return y.u64_;
 }
 #[inline]
 pub unsafe extern "C" fn xed_make_int64(mut hi: uint32_t, mut lo: uint32_t) -> int64_t {
     let mut y: xed_union64_t = xed_union64_t { byte: [0; 8] };
     y.s.lo32 = lo;
     y.s.hi32 = hi;
-    return y.i64;
+    return y.i64_;
 }
 #[inline]
 pub unsafe extern "C" fn xed_iform_to_iclass(mut iform: xed_iform_enum_t) -> xed_iclass_enum_t {
