@@ -77,7 +77,7 @@ pub unsafe extern "C" fn xed_operand_imm(mut p: *const xed_operand_t) -> uint32_
     {
         return (*p)._u._imm;
     }
-    return 0i32 as uint32_t;
+    return 0 as libc::c_int as uint32_t;
 }
 #[inline]
 pub unsafe extern "C" fn xed_operand_is_register(mut name: xed_operand_enum_t) -> xed_uint_t {
@@ -1713,7 +1713,7 @@ pub unsafe extern "C" fn xed_reg(mut reg: xed_reg_enum_t) -> xed_encoder_operand
     };
     o.type_ = XED_ENCODER_OPERAND_TYPE_REG;
     o.u.reg = reg;
-    o.width_bits = 0i32 as uint32_t;
+    o.width_bits = 0 as libc::c_int as uint32_t;
     return o;
 }
 #[inline]
@@ -1761,7 +1761,7 @@ pub unsafe extern "C" fn xed_imm1(mut v: uint8_t) -> xed_encoder_operand_t {
     };
     o.type_ = XED_ENCODER_OPERAND_TYPE_IMM1;
     o.u.imm1 = v;
-    o.width_bits = 8i32 as uint32_t;
+    o.width_bits = 8 as libc::c_int as uint32_t;
     return o;
 }
 #[inline]
@@ -1779,7 +1779,7 @@ pub unsafe extern "C" fn xed_other(
     o.type_ = XED_ENCODER_OPERAND_TYPE_OTHER;
     o.u.s.operand_name = operand_name;
     o.u.s.value = value as uint32_t;
-    o.width_bits = 0i32 as uint32_t;
+    o.width_bits = 0 as libc::c_int as uint32_t;
     return o;
 }
 #[inline]
@@ -1824,9 +1824,9 @@ pub unsafe extern "C" fn xed_mem_b(
     o.u.mem.base = base;
     o.u.mem.seg = XED_REG_INVALID;
     o.u.mem.index = XED_REG_INVALID;
-    o.u.mem.scale = 0i32 as uint32_t;
-    o.u.mem.disp.displacement = 0i32 as int64_t;
-    o.u.mem.disp.displacement_bits = 0i32 as uint32_t;
+    o.u.mem.scale = 0 as libc::c_int as uint32_t;
+    o.u.mem.disp.displacement = 0 as libc::c_int as int64_t;
+    o.u.mem.disp.displacement_bits = 0 as libc::c_int as uint32_t;
     o.width_bits = width_bits;
     return o;
 }
@@ -1847,7 +1847,7 @@ pub unsafe extern "C" fn xed_mem_bd(
     o.u.mem.base = base;
     o.u.mem.seg = XED_REG_INVALID;
     o.u.mem.index = XED_REG_INVALID;
-    o.u.mem.scale = 0i32 as uint32_t;
+    o.u.mem.scale = 0 as libc::c_int as uint32_t;
     o.u.mem.disp = disp;
     o.width_bits = width_bits;
     return o;
@@ -1893,9 +1893,9 @@ pub unsafe extern "C" fn xed_mem_gb(
     o.u.mem.base = base;
     o.u.mem.seg = seg;
     o.u.mem.index = XED_REG_INVALID;
-    o.u.mem.scale = 0i32 as uint32_t;
-    o.u.mem.disp.displacement = 0i32 as int64_t;
-    o.u.mem.disp.displacement_bits = 0i32 as uint32_t;
+    o.u.mem.scale = 0 as libc::c_int as uint32_t;
+    o.u.mem.disp.displacement = 0 as libc::c_int as int64_t;
+    o.u.mem.disp.displacement_bits = 0 as libc::c_int as uint32_t;
     o.width_bits = width_bits;
     return o;
 }
@@ -1917,7 +1917,7 @@ pub unsafe extern "C" fn xed_mem_gbd(
     o.u.mem.base = base;
     o.u.mem.seg = seg;
     o.u.mem.index = XED_REG_INVALID;
-    o.u.mem.scale = 0i32 as uint32_t;
+    o.u.mem.scale = 0 as libc::c_int as uint32_t;
     o.u.mem.disp = disp;
     o.width_bits = width_bits;
     return o;
@@ -1939,7 +1939,7 @@ pub unsafe extern "C" fn xed_mem_gd(
     o.u.mem.base = XED_REG_INVALID;
     o.u.mem.seg = seg;
     o.u.mem.index = XED_REG_INVALID;
-    o.u.mem.scale = 0i32 as uint32_t;
+    o.u.mem.scale = 0 as libc::c_int as uint32_t;
     o.u.mem.disp = disp;
     o.width_bits = width_bits;
     return o;
@@ -1978,11 +1978,11 @@ pub unsafe extern "C" fn xed_addr(
 }
 #[inline]
 pub unsafe extern "C" fn xed_rep(mut x: *mut xed_encoder_instruction_t) {
-    (*x).prefixes.s.set_rep(1i32 as uint32_t);
+    (*x).prefixes.s.set_rep(1 as libc::c_int as uint32_t);
 }
 #[inline]
 pub unsafe extern "C" fn xed_repne(mut x: *mut xed_encoder_instruction_t) {
-    (*x).prefixes.s.set_repne(1i32 as uint32_t);
+    (*x).prefixes.s.set_repne(1 as libc::c_int as uint32_t);
 }
 #[inline]
 pub unsafe extern "C" fn xed_inst0(
@@ -1994,9 +1994,9 @@ pub unsafe extern "C" fn xed_inst0(
     (*inst).mode = mode;
     (*inst).iclass = iclass;
     (*inst).effective_operand_width = effective_operand_width;
-    (*inst).effective_address_width = 0i32 as uint32_t;
-    (*inst).prefixes.i = 0i32 as uint32_t;
-    (*inst).noperands = 0i32 as uint32_t;
+    (*inst).effective_address_width = 0 as libc::c_int as uint32_t;
+    (*inst).prefixes.i = 0 as libc::c_int as uint32_t;
+    (*inst).noperands = 0 as libc::c_int as uint32_t;
 }
 #[inline]
 pub unsafe extern "C" fn xed_inst1(
@@ -2009,10 +2009,10 @@ pub unsafe extern "C" fn xed_inst1(
     (*inst).mode = mode;
     (*inst).iclass = iclass;
     (*inst).effective_operand_width = effective_operand_width;
-    (*inst).effective_address_width = 0i32 as uint32_t;
-    (*inst).prefixes.i = 0i32 as uint32_t;
-    (*inst).operands[0] = op0;
-    (*inst).noperands = 1i32 as uint32_t;
+    (*inst).effective_address_width = 0 as libc::c_int as uint32_t;
+    (*inst).prefixes.i = 0 as libc::c_int as uint32_t;
+    (*inst).operands[0 as libc::c_int as usize] = op0;
+    (*inst).noperands = 1 as libc::c_int as uint32_t;
 }
 #[inline]
 pub unsafe extern "C" fn xed_inst2(
@@ -2026,11 +2026,11 @@ pub unsafe extern "C" fn xed_inst2(
     (*inst).mode = mode;
     (*inst).iclass = iclass;
     (*inst).effective_operand_width = effective_operand_width;
-    (*inst).effective_address_width = 0i32 as uint32_t;
-    (*inst).prefixes.i = 0i32 as uint32_t;
-    (*inst).operands[0] = op0;
-    (*inst).operands[1] = op1;
-    (*inst).noperands = 2i32 as uint32_t;
+    (*inst).effective_address_width = 0 as libc::c_int as uint32_t;
+    (*inst).prefixes.i = 0 as libc::c_int as uint32_t;
+    (*inst).operands[0 as libc::c_int as usize] = op0;
+    (*inst).operands[1 as libc::c_int as usize] = op1;
+    (*inst).noperands = 2 as libc::c_int as uint32_t;
 }
 #[inline]
 pub unsafe extern "C" fn xed_inst3(
@@ -2045,12 +2045,12 @@ pub unsafe extern "C" fn xed_inst3(
     (*inst).mode = mode;
     (*inst).iclass = iclass;
     (*inst).effective_operand_width = effective_operand_width;
-    (*inst).effective_address_width = 0i32 as uint32_t;
-    (*inst).prefixes.i = 0i32 as uint32_t;
-    (*inst).operands[0] = op0;
-    (*inst).operands[1] = op1;
-    (*inst).operands[2] = op2;
-    (*inst).noperands = 3i32 as uint32_t;
+    (*inst).effective_address_width = 0 as libc::c_int as uint32_t;
+    (*inst).prefixes.i = 0 as libc::c_int as uint32_t;
+    (*inst).operands[0 as libc::c_int as usize] = op0;
+    (*inst).operands[1 as libc::c_int as usize] = op1;
+    (*inst).operands[2 as libc::c_int as usize] = op2;
+    (*inst).noperands = 3 as libc::c_int as uint32_t;
 }
 #[inline]
 pub unsafe extern "C" fn xed_inst4(
@@ -2066,13 +2066,13 @@ pub unsafe extern "C" fn xed_inst4(
     (*inst).mode = mode;
     (*inst).iclass = iclass;
     (*inst).effective_operand_width = effective_operand_width;
-    (*inst).effective_address_width = 0i32 as uint32_t;
-    (*inst).prefixes.i = 0i32 as uint32_t;
-    (*inst).operands[0] = op0;
-    (*inst).operands[1] = op1;
-    (*inst).operands[2] = op2;
-    (*inst).operands[3] = op3;
-    (*inst).noperands = 4i32 as uint32_t;
+    (*inst).effective_address_width = 0 as libc::c_int as uint32_t;
+    (*inst).prefixes.i = 0 as libc::c_int as uint32_t;
+    (*inst).operands[0 as libc::c_int as usize] = op0;
+    (*inst).operands[1 as libc::c_int as usize] = op1;
+    (*inst).operands[2 as libc::c_int as usize] = op2;
+    (*inst).operands[3 as libc::c_int as usize] = op3;
+    (*inst).noperands = 4 as libc::c_int as uint32_t;
 }
 #[inline]
 pub unsafe extern "C" fn xed_inst5(
@@ -2089,14 +2089,14 @@ pub unsafe extern "C" fn xed_inst5(
     (*inst).mode = mode;
     (*inst).iclass = iclass;
     (*inst).effective_operand_width = effective_operand_width;
-    (*inst).effective_address_width = 0i32 as uint32_t;
-    (*inst).prefixes.i = 0i32 as uint32_t;
-    (*inst).operands[0] = op0;
-    (*inst).operands[1] = op1;
-    (*inst).operands[2] = op2;
-    (*inst).operands[3] = op3;
-    (*inst).operands[4] = op4;
-    (*inst).noperands = 5i32 as uint32_t;
+    (*inst).effective_address_width = 0 as libc::c_int as uint32_t;
+    (*inst).prefixes.i = 0 as libc::c_int as uint32_t;
+    (*inst).operands[0 as libc::c_int as usize] = op0;
+    (*inst).operands[1 as libc::c_int as usize] = op1;
+    (*inst).operands[2 as libc::c_int as usize] = op2;
+    (*inst).operands[3 as libc::c_int as usize] = op3;
+    (*inst).operands[4 as libc::c_int as usize] = op4;
+    (*inst).noperands = 5 as libc::c_int as uint32_t;
 }
 #[inline]
 pub unsafe extern "C" fn xed_inst(
@@ -2111,9 +2111,9 @@ pub unsafe extern "C" fn xed_inst(
     (*inst).mode = mode;
     (*inst).iclass = iclass;
     (*inst).effective_operand_width = effective_operand_width;
-    (*inst).effective_address_width = 0i32 as uint32_t;
-    (*inst).prefixes.i = 0i32 as uint32_t;
-    i = 0i32 as xed_uint_t;
+    (*inst).effective_address_width = 0 as libc::c_int as uint32_t;
+    (*inst).prefixes.i = 0 as libc::c_int as uint32_t;
+    i = 0 as libc::c_int as xed_uint_t;
     while i < number_of_operands {
         (*inst).operands[i as usize] = *operand_array.offset(i as isize);
         i = i.wrapping_add(1)
@@ -2206,26 +2206,26 @@ pub unsafe extern "C" fn xed_decoded_inst_get_machine_mode_bits(
     mut p: *const xed_decoded_inst_t,
 ) -> xed_uint_t {
     let mut mode: xed_uint_t = xed3_operand_get_mode(p);
-    if mode == 2i32 as libc::c_uint {
-        return 64i32 as xed_uint_t;
+    if mode == 2 as libc::c_int as libc::c_uint {
+        return 64 as libc::c_int as xed_uint_t;
     }
-    if mode == 1i32 as libc::c_uint {
-        return 32i32 as xed_uint_t;
+    if mode == 1 as libc::c_int as libc::c_uint {
+        return 32 as libc::c_int as xed_uint_t;
     }
-    return 16i32 as xed_uint_t;
+    return 16 as libc::c_int as xed_uint_t;
 }
 #[inline]
 pub unsafe extern "C" fn xed_decoded_inst_get_stack_address_mode_bits(
     mut p: *const xed_decoded_inst_t,
 ) -> xed_uint_t {
     let mut smode: xed_uint_t = xed3_operand_get_smode(p);
-    if smode == 2i32 as libc::c_uint {
-        return 64i32 as xed_uint_t;
+    if smode == 2 as libc::c_int as libc::c_uint {
+        return 64 as libc::c_int as xed_uint_t;
     }
-    if smode == 1i32 as libc::c_uint {
-        return 32i32 as xed_uint_t;
+    if smode == 1 as libc::c_int as libc::c_uint {
+        return 32 as libc::c_int as xed_uint_t;
     }
-    return 16i32 as xed_uint_t;
+    return 16 as libc::c_int as xed_uint_t;
 }
 #[inline]
 pub unsafe extern "C" fn xed_decoded_inst_get_input_chip(
