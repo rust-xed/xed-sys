@@ -5,7 +5,7 @@ authors = ["Phantomical", "Agustin Godnic"]
 edition = "2018"
 
 [dependencies]
-bindgen = "0.55"
+bindgen = "0.56"
 fs_extra = "1.2"
 num_cpus = "1.13"
 target-lexicon = "0.11"
