@@ -66,7 +66,7 @@ mod _detail {
         // conventions between c2rust and bindgen.
         // This should break pretty loudly if it becomes wrong
         // with a new version of XED.
-        type C2RustUnnamed_6 = xed_encoder_operand_t__bindgen_ty_1;
+        type C2RustUnnamed_7 = xed_encoder_operand_t__bindgen_ty_1;
 
         // Note: Can't use a module here since we need to insert
         //       types into the namespace of the generated code.
@@ -99,7 +99,7 @@ mod _detail {
             };
 
             assert_eq!(
-                "Copyright (C) 2019, Intel Corporation. All rights reserved.",
+                "Copyright (C) 2021, Intel Corporation. All rights reserved.",
                 &copyright
             );
         }
