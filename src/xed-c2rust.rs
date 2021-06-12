@@ -82,7 +82,7 @@ pub unsafe extern "C" fn xed_operand_imm(mut p: *const xed_operand_t) -> uint32_
 #[inline]
 pub unsafe extern "C" fn xed_operand_is_register(mut name: xed_operand_enum_t) -> xed_uint_t {
     return (name as libc::c_uint >= XED_OPERAND_REG0 as libc::c_int as libc::c_uint
-        && name as libc::c_uint <= XED_OPERAND_REG8 as libc::c_int as libc::c_uint)
+        && name as libc::c_uint <= XED_OPERAND_REG9 as libc::c_int as libc::c_uint)
         as libc::c_int as xed_uint_t;
 }
 #[inline]
@@ -153,6 +153,19 @@ pub unsafe extern "C" fn xed3_operand_set_hint(
     mut opval: xed_bits_t,
 ) {
     (*d)._operands.hint = opval as uint8_t;
+}
+#[inline]
+pub unsafe extern "C" fn xed3_operand_get_encode_force(
+    mut d: *const xed_decoded_inst_t,
+) -> xed_bits_t {
+    return (*d)._operands.encode_force as xed_bits_t;
+}
+#[inline]
+pub unsafe extern "C" fn xed3_operand_set_encode_force(
+    mut d: *mut xed_decoded_inst_t,
+    mut opval: xed_bits_t,
+) {
+    (*d)._operands.encode_force = opval as uint8_t;
 }
 #[inline]
 pub unsafe extern "C" fn xed3_operand_get_lock(mut d: *const xed_decoded_inst_t) -> xed_bits_t {
@@ -534,6 +547,19 @@ pub unsafe extern "C" fn xed3_operand_set_mode_first_prefix(
     (*d)._operands.mode_first_prefix = opval as uint8_t;
 }
 #[inline]
+pub unsafe extern "C" fn xed3_operand_get_mode_short_ud0(
+    mut d: *const xed_decoded_inst_t,
+) -> xed_bits_t {
+    return (*d)._operands.mode_short_ud0 as xed_bits_t;
+}
+#[inline]
+pub unsafe extern "C" fn xed3_operand_set_mode_short_ud0(
+    mut d: *mut xed_decoded_inst_t,
+    mut opval: xed_bits_t,
+) {
+    (*d)._operands.mode_short_ud0 = opval as uint8_t;
+}
+#[inline]
 pub unsafe extern "C" fn xed3_operand_get_imm0(mut d: *const xed_decoded_inst_t) -> xed_bits_t {
     return (*d)._operands.imm0 as xed_bits_t;
 }
@@ -689,15 +715,15 @@ pub unsafe extern "C" fn xed3_operand_set_scale(
     (*d)._operands.scale = opval as uint8_t;
 }
 #[inline]
-pub unsafe extern "C" fn xed3_operand_get_sib(mut d: *const xed_decoded_inst_t) -> xed_bits_t {
-    return (*d)._operands.sib as xed_bits_t;
+pub unsafe extern "C" fn xed3_operand_get_need_sib(mut d: *const xed_decoded_inst_t) -> xed_bits_t {
+    return (*d)._operands.need_sib as xed_bits_t;
 }
 #[inline]
-pub unsafe extern "C" fn xed3_operand_set_sib(
+pub unsafe extern "C" fn xed3_operand_set_need_sib(
     mut d: *mut xed_decoded_inst_t,
     mut opval: xed_bits_t,
 ) {
-    (*d)._operands.sib = opval as uint8_t;
+    (*d)._operands.need_sib = opval as uint8_t;
 }
 #[inline]
 pub unsafe extern "C" fn xed3_operand_get_sibscale(mut d: *const xed_decoded_inst_t) -> xed_bits_t {
@@ -922,6 +948,17 @@ pub unsafe extern "C" fn xed3_operand_set_reg8(
     (*d)._operands.reg8 = opval as uint16_t;
 }
 #[inline]
+pub unsafe extern "C" fn xed3_operand_get_reg9(mut d: *const xed_decoded_inst_t) -> xed_reg_enum_t {
+    return (*d)._operands.reg9 as xed_reg_enum_t;
+}
+#[inline]
+pub unsafe extern "C" fn xed3_operand_set_reg9(
+    mut d: *mut xed_decoded_inst_t,
+    mut opval: xed_reg_enum_t,
+) {
+    (*d)._operands.reg9 = opval as uint16_t;
+}
+#[inline]
 pub unsafe extern "C" fn xed3_operand_get_outreg(
     mut d: *const xed_decoded_inst_t,
 ) -> xed_reg_enum_t {
@@ -1020,17 +1057,6 @@ pub unsafe extern "C" fn xed3_operand_set_out_of_bytes(
     mut opval: xed_bits_t,
 ) {
     (*d)._operands.out_of_bytes = opval as uint8_t;
-}
-#[inline]
-pub unsafe extern "C" fn xed3_operand_get_amd3dnow(mut d: *const xed_decoded_inst_t) -> xed_bits_t {
-    return (*d)._operands.amd3dnow as xed_bits_t;
-}
-#[inline]
-pub unsafe extern "C" fn xed3_operand_set_amd3dnow(
-    mut d: *mut xed_decoded_inst_t,
-    mut opval: xed_bits_t,
-) {
-    (*d)._operands.amd3dnow = opval as uint8_t;
 }
 #[inline]
 pub unsafe extern "C" fn xed3_operand_get_first_f2f3(
@@ -1306,6 +1332,17 @@ pub unsafe extern "C" fn xed3_operand_set_dummy(
     mut opval: xed_bits_t,
 ) {
     (*d)._operands.dummy = opval as uint8_t;
+}
+#[inline]
+pub unsafe extern "C" fn xed3_operand_get_amd3dnow(mut d: *const xed_decoded_inst_t) -> xed_bits_t {
+    return (*d)._operands.amd3dnow as xed_bits_t;
+}
+#[inline]
+pub unsafe extern "C" fn xed3_operand_set_amd3dnow(
+    mut d: *mut xed_decoded_inst_t,
+    mut opval: xed_bits_t,
+) {
+    (*d)._operands.amd3dnow = opval as uint8_t;
 }
 #[inline]
 pub unsafe extern "C" fn xed3_operand_get_mpxmode(mut d: *const xed_decoded_inst_t) -> xed_bits_t {
@@ -1675,7 +1712,7 @@ pub unsafe extern "C" fn xed_relbr(
 ) -> xed_encoder_operand_t {
     let mut o: xed_encoder_operand_t = xed_encoder_operand_t {
         type_: XED_ENCODER_OPERAND_TYPE_INVALID,
-        u: C2RustUnnamed_6 {
+        u: C2RustUnnamed_7 {
             reg: XED_REG_INVALID,
         },
         width_bits: 0,
@@ -1692,7 +1729,7 @@ pub unsafe extern "C" fn xed_ptr(
 ) -> xed_encoder_operand_t {
     let mut o: xed_encoder_operand_t = xed_encoder_operand_t {
         type_: XED_ENCODER_OPERAND_TYPE_INVALID,
-        u: C2RustUnnamed_6 {
+        u: C2RustUnnamed_7 {
             reg: XED_REG_INVALID,
         },
         width_bits: 0,
@@ -1706,7 +1743,7 @@ pub unsafe extern "C" fn xed_ptr(
 pub unsafe extern "C" fn xed_reg(mut reg: xed_reg_enum_t) -> xed_encoder_operand_t {
     let mut o: xed_encoder_operand_t = xed_encoder_operand_t {
         type_: XED_ENCODER_OPERAND_TYPE_INVALID,
-        u: C2RustUnnamed_6 {
+        u: C2RustUnnamed_7 {
             reg: XED_REG_INVALID,
         },
         width_bits: 0,
@@ -1723,7 +1760,7 @@ pub unsafe extern "C" fn xed_imm0(
 ) -> xed_encoder_operand_t {
     let mut o: xed_encoder_operand_t = xed_encoder_operand_t {
         type_: XED_ENCODER_OPERAND_TYPE_INVALID,
-        u: C2RustUnnamed_6 {
+        u: C2RustUnnamed_7 {
             reg: XED_REG_INVALID,
         },
         width_bits: 0,
@@ -1740,7 +1777,7 @@ pub unsafe extern "C" fn xed_simm0(
 ) -> xed_encoder_operand_t {
     let mut o: xed_encoder_operand_t = xed_encoder_operand_t {
         type_: XED_ENCODER_OPERAND_TYPE_INVALID,
-        u: C2RustUnnamed_6 {
+        u: C2RustUnnamed_7 {
             reg: XED_REG_INVALID,
         },
         width_bits: 0,
@@ -1754,7 +1791,7 @@ pub unsafe extern "C" fn xed_simm0(
 pub unsafe extern "C" fn xed_imm1(mut v: uint8_t) -> xed_encoder_operand_t {
     let mut o: xed_encoder_operand_t = xed_encoder_operand_t {
         type_: XED_ENCODER_OPERAND_TYPE_INVALID,
-        u: C2RustUnnamed_6 {
+        u: C2RustUnnamed_7 {
             reg: XED_REG_INVALID,
         },
         width_bits: 0,
@@ -1771,7 +1808,7 @@ pub unsafe extern "C" fn xed_other(
 ) -> xed_encoder_operand_t {
     let mut o: xed_encoder_operand_t = xed_encoder_operand_t {
         type_: XED_ENCODER_OPERAND_TYPE_INVALID,
-        u: C2RustUnnamed_6 {
+        u: C2RustUnnamed_7 {
             reg: XED_REG_INVALID,
         },
         width_bits: 0,
@@ -1786,11 +1823,12 @@ pub unsafe extern "C" fn xed_other(
 pub unsafe extern "C" fn xed_seg0(mut seg0: xed_reg_enum_t) -> xed_encoder_operand_t {
     let mut o: xed_encoder_operand_t = xed_encoder_operand_t {
         type_: XED_ENCODER_OPERAND_TYPE_INVALID,
-        u: C2RustUnnamed_6 {
+        u: C2RustUnnamed_7 {
             reg: XED_REG_INVALID,
         },
         width_bits: 0,
     };
+    o.width_bits = 0 as libc::c_int as uint32_t;
     o.type_ = XED_ENCODER_OPERAND_TYPE_SEG0;
     o.u.reg = seg0;
     return o;
@@ -1799,11 +1837,12 @@ pub unsafe extern "C" fn xed_seg0(mut seg0: xed_reg_enum_t) -> xed_encoder_opera
 pub unsafe extern "C" fn xed_seg1(mut seg1: xed_reg_enum_t) -> xed_encoder_operand_t {
     let mut o: xed_encoder_operand_t = xed_encoder_operand_t {
         type_: XED_ENCODER_OPERAND_TYPE_INVALID,
-        u: C2RustUnnamed_6 {
+        u: C2RustUnnamed_7 {
             reg: XED_REG_INVALID,
         },
         width_bits: 0,
     };
+    o.width_bits = 0 as libc::c_int as uint32_t;
     o.type_ = XED_ENCODER_OPERAND_TYPE_SEG1;
     o.u.reg = seg1;
     return o;
@@ -1815,7 +1854,7 @@ pub unsafe extern "C" fn xed_mem_b(
 ) -> xed_encoder_operand_t {
     let mut o: xed_encoder_operand_t = xed_encoder_operand_t {
         type_: XED_ENCODER_OPERAND_TYPE_INVALID,
-        u: C2RustUnnamed_6 {
+        u: C2RustUnnamed_7 {
             reg: XED_REG_INVALID,
         },
         width_bits: 0,
@@ -1838,7 +1877,7 @@ pub unsafe extern "C" fn xed_mem_bd(
 ) -> xed_encoder_operand_t {
     let mut o: xed_encoder_operand_t = xed_encoder_operand_t {
         type_: XED_ENCODER_OPERAND_TYPE_INVALID,
-        u: C2RustUnnamed_6 {
+        u: C2RustUnnamed_7 {
             reg: XED_REG_INVALID,
         },
         width_bits: 0,
@@ -1862,7 +1901,7 @@ pub unsafe extern "C" fn xed_mem_bisd(
 ) -> xed_encoder_operand_t {
     let mut o: xed_encoder_operand_t = xed_encoder_operand_t {
         type_: XED_ENCODER_OPERAND_TYPE_INVALID,
-        u: C2RustUnnamed_6 {
+        u: C2RustUnnamed_7 {
             reg: XED_REG_INVALID,
         },
         width_bits: 0,
@@ -1884,7 +1923,7 @@ pub unsafe extern "C" fn xed_mem_gb(
 ) -> xed_encoder_operand_t {
     let mut o: xed_encoder_operand_t = xed_encoder_operand_t {
         type_: XED_ENCODER_OPERAND_TYPE_INVALID,
-        u: C2RustUnnamed_6 {
+        u: C2RustUnnamed_7 {
             reg: XED_REG_INVALID,
         },
         width_bits: 0,
@@ -1908,7 +1947,7 @@ pub unsafe extern "C" fn xed_mem_gbd(
 ) -> xed_encoder_operand_t {
     let mut o: xed_encoder_operand_t = xed_encoder_operand_t {
         type_: XED_ENCODER_OPERAND_TYPE_INVALID,
-        u: C2RustUnnamed_6 {
+        u: C2RustUnnamed_7 {
             reg: XED_REG_INVALID,
         },
         width_bits: 0,
@@ -1930,7 +1969,7 @@ pub unsafe extern "C" fn xed_mem_gd(
 ) -> xed_encoder_operand_t {
     let mut o: xed_encoder_operand_t = xed_encoder_operand_t {
         type_: XED_ENCODER_OPERAND_TYPE_INVALID,
-        u: C2RustUnnamed_6 {
+        u: C2RustUnnamed_7 {
             reg: XED_REG_INVALID,
         },
         width_bits: 0,
@@ -1955,7 +1994,7 @@ pub unsafe extern "C" fn xed_mem_gbisd(
 ) -> xed_encoder_operand_t {
     let mut o: xed_encoder_operand_t = xed_encoder_operand_t {
         type_: XED_ENCODER_OPERAND_TYPE_INVALID,
-        u: C2RustUnnamed_6 {
+        u: C2RustUnnamed_7 {
             reg: XED_REG_INVALID,
         },
         width_bits: 0,
