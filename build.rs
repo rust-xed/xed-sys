@@ -107,11 +107,11 @@ fn main() {
     let build_dir = out_dir.join("build");
     let mfile_path = cwd.join("xed/mfile.py");
 
-    create_dir(&install_dir).expect(&format!(
+    create_dir(&install_dir).unwrap_or_else(|_| panic!(
         "Failed to create directory '{}'",
         install_dir.display()
     ));
-    create_dir(&build_dir).expect(&format!(
+    create_dir(&build_dir).unwrap_or_else(|_| panic!(
         "Failed to create directory '{}'",
         build_dir.display()
     ));
