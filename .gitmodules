@@ -3,4 +3,4 @@
 	url = https://github.com/intelxed/xed
 [submodule "mbuild"]
 	path = mbuild
-	url = https://github.com/rust-xed/mbuild
+	url = https://github.com/intelxed/mbuild
