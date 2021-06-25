@@ -7,9 +7,14 @@ jobs:
   build_and_test:
     name: xed-rs
     runs-on: ubuntu-latest
+    continue-on-error: ${{ matrix.experimental }}
     strategy:
       matrix:
-        toolchain: [stable, beta, nightly]
+        toolchain: [stable, beta]
+        experimental: [false]
+        include:
+          - toolchain: nightly
+            experimental: true
     steps:
       - uses: actions/checkout@v2
         with:
