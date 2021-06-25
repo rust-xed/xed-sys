@@ -80,7 +80,9 @@ mod _detail {
             non_snake_case,
             non_upper_case_globals,
             renamed_and_removed_lints, // needed for intra_doc_link_resolution_failure
-            intra_doc_link_resolution_failure
+            intra_doc_link_resolution_failure,
+            // Needed due to rust-lang/rust-bindgen#1651
+            deref_nullptr
         )]
 
         include!(concat!(env!("OUT_DIR"), "/xed_interface.rs"));
