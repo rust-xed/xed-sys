@@ -28,10 +28,10 @@ fn build_bindings(cwd: &Path) {
         .clang_arg(format!("--include-directory={}", include_dir.display()))
         .clang_arg("-DXED_ENCODER")
         .clang_arg("-DXED_DECODER")
-        .whitelist_type("xed3?_.*")
-        .whitelist_function("(str2)?xed3?_.*")
-        .whitelist_function("xed_isa_set_is_valid_for_chip")
-        .whitelist_var("(XED|xed)_.*")
+        .allowlist_type("xed3?_.*")
+        .allowlist_function("(str2)?xed3?_.*")
+        .allowlist_function("xed_isa_set_is_valid_for_chip")
+        .allowlist_var("(XED|xed)_.*")
         .header(format!("{}", dot_h.display()))
         .impl_debug(true)
         .derive_copy(true)
@@ -107,11 +107,11 @@ fn main() {
     let build_dir = out_dir.join("build");
     let mfile_path = cwd.join("xed/mfile.py");
 
-    create_dir(&install_dir).expect(&format!(
+    create_dir(&install_dir).unwrap_or_else(|_| panic!(
         "Failed to create directory '{}'",
         install_dir.display()
     ));
-    create_dir(&build_dir).expect(&format!(
+    create_dir(&build_dir).unwrap_or_else(|_| panic!(
         "Failed to create directory '{}'",
         build_dir.display()
     ));
