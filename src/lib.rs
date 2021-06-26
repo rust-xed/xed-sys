@@ -11,18 +11,6 @@ extern crate core;
 
 pub use crate::_detail::{c2rust::*, xed_interface_inner::*};
 
-// Note: Remove this when v0.4 rolls around
-#[deprecated(since = "0.3.0", note = "All exports are now in the crate root")]
-pub mod xed_interface {
-    pub use crate::*;
-}
-
-// Note: Remove this when v0.4 rolls around
-#[deprecated(since = "0.3.0", note = "All exports are now in the crate root")]
-pub mod xed_version {
-    pub use crate::{xed_get_copyright, xed_get_version};
-}
-
 // This module shouldn't conflict with any of the stuff exported
 // in the root.
 mod _detail {
