@@ -1,5 +1,11 @@
 
-on: [push, pull_request]
+on:
+  # Dependabot branches are already built by the pull-request flow since
+  # dependabot will always open a corresponding PR.
+  push:
+    branches-ignore:
+      - dependabot/**
+  pull_request:
 
 name: ci-linux
 
