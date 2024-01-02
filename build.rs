@@ -131,9 +131,11 @@ fn main() {
         .arg("--silent");
 
     if cfg!(target_family = "windows") {
-        cmd.arg("--setup-msvs")
-            .arg("--msvs-version")
-            .arg(env::var("MSVS_VERSION").unwrap_or("16".to_string()));
+        if let Ok(msvs_version) = env::var("MSVS_VERSION") {
+            cmd.arg("--setup-msvs")
+                .arg("--msvs-version")
+                .arg(msvs_version);
+        }
     } else {
         cmd.arg("--static-stripped")
             .arg("--extra-ccflags=-fPIC")
