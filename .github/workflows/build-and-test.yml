@@ -1,4 +1,3 @@
-
 on:
   # Dependabot branches are already built by the pull-request flow since
   # dependabot will always open a corresponding PR.
@@ -12,17 +11,18 @@ name: ci-linux
 jobs:
   build_and_test:
     name: xed-rs
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
     continue-on-error: ${{ matrix.experimental }}
     strategy:
       matrix:
+        os: [ubuntu-latest, windows-2019]
         toolchain: [stable, beta]
         experimental: [false]
         include:
           - toolchain: nightly
             experimental: true
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
         with:
           submodules: true
       - uses: actions-rs/toolchain@v1
