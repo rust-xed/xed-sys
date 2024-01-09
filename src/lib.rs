@@ -101,7 +101,7 @@ mod _detail {
 
             let version_cstr = unsafe { CStr::from_ptr(xed_get_version()) };
             let version = version_cstr.to_string_lossy();
-            let git_version = CStr::from_bytes_with_nul(XED_GIT_VERSION)
+            let git_version = CStr::from_bytes_with_nul(XED_VERSION)
                 .unwrap()
                 .to_string_lossy();
 
