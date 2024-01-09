@@ -20,7 +20,7 @@ clang -E -P -CC xed.c -o target/artifacts/xed-$triple.c -Itarget/install/include
   echo "\"command\": \"clang -c target/artifacts/xed-'$triple'.c -o target/artifacts/xed-$triple.o \","
   echo '"file": "target/artifacts/xed-'$triple'.c"'
   echo "}]"
-) > compile-commands.json
+) >compile-commands.json
 # echo '[{ "directory": ".", "command": "clang -c xed.c -o target/artifacts/xed-$triple.o  -Itarget/install/include -Dstatic= -Dinline= -D__inline= -D__inline__=", "file": "xed.c" }]' > compile_commands.json
 c2rust transpile --overwrite-existing compile-commands.json
 
