@@ -100,6 +100,10 @@ fn build_xed() {
         cmd.arg("--opt=0");
     }
 
+    if cfg!(feature = "enc2") {
+        cmd.arg("--enc2");
+    }
+
     eprintln!("XED build command: {:?}", cmd);
 
     let status = cmd.status().expect("Failed to start xed build");
@@ -112,6 +116,13 @@ fn build_xed() {
 
     println!("cargo:rustc-link-search=native={}", lib_dir.display());
     println!("cargo:rustc-link-lib=static=xed");
+
+    if cfg!(feature = "enc2") {
+        println!("cargo:rustc-link-lib=static=xed-enc2-m32-a32");
+        println!("cargo:rustc-link-lib=static=xed-enc2-m64-a64");
+        println!("cargo:rustc-link-lib=static=xed-chk-enc2-m32-a32");
+        println!("cargo:rustc-link-lib=static=xed-chk-enc2-m64-a64");
+    }
 }
 
 fn build_inline_shim() {

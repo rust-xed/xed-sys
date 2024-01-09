@@ -11,10 +11,17 @@ keywords = ["xed", "intel", "x86", "x86_64"]
 categories = ["encoding", "external-ffi-bindings", "hardware-support", "parsing", "no_std"]
 
 [badges]
-appveyor  = { repository = "rust-xed/xed-sys" }
+appveyor = { repository = "rust-xed/xed-sys" }
 travis-ci = { repository = "rust-xed/xed-sys" }
 
 [features]
+# Enable the enc2 module of XED.
+#
+# Note that this will somewhat dramatically slow down compilation of xed-sys.
+# The enc2 module involves a large amount of generated code and the resulting
+# bindgen definitions contain 40+MB of rust code.
+enc2 = ["bindgen"]
+
 # Generate bindings with bindgen at build-time instead of using the
 # pregenerated bindings.
 #
