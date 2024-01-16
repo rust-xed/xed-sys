@@ -257,6 +257,17 @@ pub unsafe extern "C" fn xed3_operand_set_norex(
     (*d)._operands.norex = opval as uint8_t;
 }
 #[inline]
+pub unsafe extern "C" fn xed3_operand_get_norex2(mut d: *const xed_decoded_inst_t) -> xed_bits_t {
+    return (*d)._operands.norex2 as xed_bits_t;
+}
+#[inline]
+pub unsafe extern "C" fn xed3_operand_set_norex2(
+    mut d: *mut xed_decoded_inst_t,
+    mut opval: xed_bits_t,
+) {
+    (*d)._operands.norex2 = opval as uint8_t;
+}
+#[inline]
 pub unsafe extern "C" fn xed3_operand_get_needrex(mut d: *const xed_decoded_inst_t) -> xed_bits_t {
     return (*d)._operands.needrex as xed_bits_t;
 }
@@ -323,6 +334,61 @@ pub unsafe extern "C" fn xed3_operand_set_rexb(
     (*d)._operands.rexb = opval as uint8_t;
 }
 #[inline]
+pub unsafe extern "C" fn xed3_operand_get_rex2(mut d: *const xed_decoded_inst_t) -> xed_bits_t {
+    return (*d)._operands.rex2 as xed_bits_t;
+}
+#[inline]
+pub unsafe extern "C" fn xed3_operand_set_rex2(
+    mut d: *mut xed_decoded_inst_t,
+    mut opval: xed_bits_t,
+) {
+    (*d)._operands.rex2 = opval as uint8_t;
+}
+#[inline]
+pub unsafe extern "C" fn xed3_operand_get_rexb4(mut d: *const xed_decoded_inst_t) -> xed_bits_t {
+    return (*d)._operands.rexb4 as xed_bits_t;
+}
+#[inline]
+pub unsafe extern "C" fn xed3_operand_set_rexb4(
+    mut d: *mut xed_decoded_inst_t,
+    mut opval: xed_bits_t,
+) {
+    (*d)._operands.rexb4 = opval as uint8_t;
+}
+#[inline]
+pub unsafe extern "C" fn xed3_operand_get_rexx4(mut d: *const xed_decoded_inst_t) -> xed_bits_t {
+    return (*d)._operands.rexx4 as xed_bits_t;
+}
+#[inline]
+pub unsafe extern "C" fn xed3_operand_set_rexx4(
+    mut d: *mut xed_decoded_inst_t,
+    mut opval: xed_bits_t,
+) {
+    (*d)._operands.rexx4 = opval as uint8_t;
+}
+#[inline]
+pub unsafe extern "C" fn xed3_operand_get_rexr4(mut d: *const xed_decoded_inst_t) -> xed_bits_t {
+    return (*d)._operands.rexr4 as xed_bits_t;
+}
+#[inline]
+pub unsafe extern "C" fn xed3_operand_set_rexr4(
+    mut d: *mut xed_decoded_inst_t,
+    mut opval: xed_bits_t,
+) {
+    (*d)._operands.rexr4 = opval as uint8_t;
+}
+#[inline]
+pub unsafe extern "C" fn xed3_operand_get_has_egpr(mut d: *const xed_decoded_inst_t) -> xed_bits_t {
+    return (*d)._operands.has_egpr as xed_bits_t;
+}
+#[inline]
+pub unsafe extern "C" fn xed3_operand_set_has_egpr(
+    mut d: *mut xed_decoded_inst_t,
+    mut opval: xed_bits_t,
+) {
+    (*d)._operands.has_egpr = opval as uint8_t;
+}
+#[inline]
 pub unsafe extern "C" fn xed3_operand_get_rep(mut d: *const xed_decoded_inst_t) -> xed_bits_t {
     return (*d)._operands.rep as xed_bits_t;
 }
@@ -387,6 +453,17 @@ pub unsafe extern "C" fn xed3_operand_set_easz(
     mut opval: xed_bits_t,
 ) {
     (*d)._operands.easz = opval as uint8_t;
+}
+#[inline]
+pub unsafe extern "C" fn xed3_operand_get_skip_osz(mut d: *const xed_decoded_inst_t) -> xed_bits_t {
+    return (*d)._operands.skip_osz as xed_bits_t;
+}
+#[inline]
+pub unsafe extern "C" fn xed3_operand_set_skip_osz(
+    mut d: *mut xed_decoded_inst_t,
+    mut opval: xed_bits_t,
+) {
+    (*d)._operands.skip_osz = opval as uint8_t;
 }
 #[inline]
 pub unsafe extern "C" fn xed3_operand_get_mod(mut d: *const xed_decoded_inst_t) -> xed_bits_t {
@@ -836,6 +913,17 @@ pub unsafe extern "C" fn xed3_operand_set_relbr(
     mut opval: xed_bits_t,
 ) {
     (*d)._operands.relbr = opval as uint8_t;
+}
+#[inline]
+pub unsafe extern "C" fn xed3_operand_get_absbr(mut d: *const xed_decoded_inst_t) -> xed_bits_t {
+    return (*d)._operands.absbr as xed_bits_t;
+}
+#[inline]
+pub unsafe extern "C" fn xed3_operand_set_absbr(
+    mut d: *mut xed_decoded_inst_t,
+    mut opval: xed_bits_t,
+) {
+    (*d)._operands.absbr = opval as uint8_t;
 }
 #[inline]
 pub unsafe extern "C" fn xed3_operand_get_ptr(mut d: *const xed_decoded_inst_t) -> xed_bits_t {
@@ -1334,6 +1422,39 @@ pub unsafe extern "C" fn xed3_operand_set_dummy(
     (*d)._operands.dummy = opval as uint8_t;
 }
 #[inline]
+pub unsafe extern "C" fn xed3_operand_get_no_evex(mut d: *const xed_decoded_inst_t) -> xed_bits_t {
+    return (*d)._operands.no_evex as xed_bits_t;
+}
+#[inline]
+pub unsafe extern "C" fn xed3_operand_set_no_evex(
+    mut d: *mut xed_decoded_inst_t,
+    mut opval: xed_bits_t,
+) {
+    (*d)._operands.no_evex = opval as uint8_t;
+}
+#[inline]
+pub unsafe extern "C" fn xed3_operand_get_no_vex(mut d: *const xed_decoded_inst_t) -> xed_bits_t {
+    return (*d)._operands.no_vex as xed_bits_t;
+}
+#[inline]
+pub unsafe extern "C" fn xed3_operand_set_no_vex(
+    mut d: *mut xed_decoded_inst_t,
+    mut opval: xed_bits_t,
+) {
+    (*d)._operands.no_vex = opval as uint8_t;
+}
+#[inline]
+pub unsafe extern "C" fn xed3_operand_get_no_apx(mut d: *const xed_decoded_inst_t) -> xed_bits_t {
+    return (*d)._operands.no_apx as xed_bits_t;
+}
+#[inline]
+pub unsafe extern "C" fn xed3_operand_set_no_apx(
+    mut d: *mut xed_decoded_inst_t,
+    mut opval: xed_bits_t,
+) {
+    (*d)._operands.no_apx = opval as uint8_t;
+}
+#[inline]
 pub unsafe extern "C" fn xed3_operand_get_amd3dnow(mut d: *const xed_decoded_inst_t) -> xed_bits_t {
     return (*d)._operands.amd3dnow as xed_bits_t;
 }
@@ -1494,17 +1615,6 @@ pub unsafe extern "C" fn xed3_operand_set_bcrc(
     (*d)._operands.bcrc = opval as uint8_t;
 }
 #[inline]
-pub unsafe extern "C" fn xed3_operand_get_rexrr(mut d: *const xed_decoded_inst_t) -> xed_bits_t {
-    return (*d)._operands.rexrr as xed_bits_t;
-}
-#[inline]
-pub unsafe extern "C" fn xed3_operand_set_rexrr(
-    mut d: *mut xed_decoded_inst_t,
-    mut opval: xed_bits_t,
-) {
-    (*d)._operands.rexrr = opval as uint8_t;
-}
-#[inline]
 pub unsafe extern "C" fn xed3_operand_get_vexdest4(mut d: *const xed_decoded_inst_t) -> xed_bits_t {
     return (*d)._operands.vexdest4 as xed_bits_t;
 }
@@ -1549,17 +1659,15 @@ pub unsafe extern "C" fn xed3_operand_set_sae(
     (*d)._operands.sae = opval as uint8_t;
 }
 #[inline]
-pub unsafe extern "C" fn xed3_operand_get_no_scale_disp8(
-    mut d: *const xed_decoded_inst_t,
-) -> xed_bits_t {
-    return (*d)._operands.no_scale_disp8 as xed_bits_t;
+pub unsafe extern "C" fn xed3_operand_get_vl_ign(mut d: *const xed_decoded_inst_t) -> xed_bits_t {
+    return (*d)._operands.vl_ign as xed_bits_t;
 }
 #[inline]
-pub unsafe extern "C" fn xed3_operand_set_no_scale_disp8(
+pub unsafe extern "C" fn xed3_operand_set_vl_ign(
     mut d: *mut xed_decoded_inst_t,
     mut opval: xed_bits_t,
 ) {
-    (*d)._operands.no_scale_disp8 = opval as uint8_t;
+    (*d)._operands.vl_ign = opval as uint8_t;
 }
 #[inline]
 pub unsafe extern "C" fn xed3_operand_get_ubit(mut d: *const xed_decoded_inst_t) -> xed_bits_t {
@@ -1582,6 +1690,50 @@ pub unsafe extern "C" fn xed3_operand_set_wbnoinvd(
     mut opval: xed_bits_t,
 ) {
     (*d)._operands.wbnoinvd = opval as uint8_t;
+}
+#[inline]
+pub unsafe extern "C" fn xed3_operand_get_evvspace(mut d: *const xed_decoded_inst_t) -> xed_bits_t {
+    return (*d)._operands.evvspace as xed_bits_t;
+}
+#[inline]
+pub unsafe extern "C" fn xed3_operand_set_evvspace(
+    mut d: *mut xed_decoded_inst_t,
+    mut opval: xed_bits_t,
+) {
+    (*d)._operands.evvspace = opval as uint8_t;
+}
+#[inline]
+pub unsafe extern "C" fn xed3_operand_get_nd(mut d: *const xed_decoded_inst_t) -> xed_bits_t {
+    return (*d)._operands.nd as xed_bits_t;
+}
+#[inline]
+pub unsafe extern "C" fn xed3_operand_set_nd(
+    mut d: *mut xed_decoded_inst_t,
+    mut opval: xed_bits_t,
+) {
+    (*d)._operands.nd = opval as uint8_t;
+}
+#[inline]
+pub unsafe extern "C" fn xed3_operand_get_nf(mut d: *const xed_decoded_inst_t) -> xed_bits_t {
+    return (*d)._operands.nf as xed_bits_t;
+}
+#[inline]
+pub unsafe extern "C" fn xed3_operand_set_nf(
+    mut d: *mut xed_decoded_inst_t,
+    mut opval: xed_bits_t,
+) {
+    (*d)._operands.nf = opval as uint8_t;
+}
+#[inline]
+pub unsafe extern "C" fn xed3_operand_get_scc(mut d: *const xed_decoded_inst_t) -> xed_bits_t {
+    return (*d)._operands.scc as xed_bits_t;
+}
+#[inline]
+pub unsafe extern "C" fn xed3_operand_set_scc(
+    mut d: *mut xed_decoded_inst_t,
+    mut opval: xed_bits_t,
+) {
+    (*d)._operands.scc = opval as uint8_t;
 }
 #[inline]
 pub unsafe extern "C" fn xed_state_init(
@@ -1717,7 +1869,24 @@ pub unsafe extern "C" fn xed_relbr(
         },
         width_bits: 0,
     };
-    o.type_ = XED_ENCODER_OPERAND_TYPE_BRDISP;
+    o.type_ = XED_ENCODER_OPERAND_TYPE_REL_BRDISP;
+    o.u.brdisp = brdisp;
+    o.width_bits = width_bits;
+    return o;
+}
+#[inline]
+pub unsafe extern "C" fn xed_absbr(
+    mut brdisp: int32_t,
+    mut width_bits: xed_uint_t,
+) -> xed_encoder_operand_t {
+    let mut o: xed_encoder_operand_t = xed_encoder_operand_t {
+        type_: XED_ENCODER_OPERAND_TYPE_INVALID,
+        u: C2RustUnnamed_7 {
+            reg: XED_REG_INVALID,
+        },
+        width_bits: 0,
+    };
+    o.type_ = XED_ENCODER_OPERAND_TYPE_ABS_BRDISP;
     o.u.brdisp = brdisp;
     o.width_bits = width_bits;
     return o;
@@ -2017,11 +2186,11 @@ pub unsafe extern "C" fn xed_addr(
 }
 #[inline]
 pub unsafe extern "C" fn xed_rep(mut x: *mut xed_encoder_instruction_t) {
-    (*x).prefixes.s.set_rep(1 as libc::c_int as uint32_t);
+    ((*x).prefixes.s).set_rep(1 as libc::c_int as uint32_t);
 }
 #[inline]
 pub unsafe extern "C" fn xed_repne(mut x: *mut xed_encoder_instruction_t) {
-    (*x).prefixes.s.set_repne(1 as libc::c_int as uint32_t);
+    ((*x).prefixes.s).set_repne(1 as libc::c_int as uint32_t);
 }
 #[inline]
 pub unsafe extern "C" fn xed_inst0(
@@ -2155,7 +2324,7 @@ pub unsafe extern "C" fn xed_inst(
     i = 0 as libc::c_int as xed_uint_t;
     while i < number_of_operands {
         (*inst).operands[i as usize] = *operand_array.offset(i as isize);
-        i = i.wrapping_add(1)
+        i = i.wrapping_add(1);
     }
     (*inst).noperands = number_of_operands;
 }
@@ -2237,7 +2406,7 @@ pub unsafe extern "C" fn xed_decoded_inst_get_byte(
     mut p: *const xed_decoded_inst_t,
     mut byte_index: xed_uint_t,
 ) -> uint8_t {
-    let mut out: uint8_t = *(*p)._byte_array._dec.offset(byte_index as isize);
+    let mut out: uint8_t = *((*p)._byte_array._dec).offset(byte_index as isize);
     return out;
 }
 #[inline]
@@ -2289,7 +2458,7 @@ pub unsafe extern "C" fn xed_decoded_inst_get_iform_enum(
 pub unsafe extern "C" fn xed_decoded_inst_get_iform_enum_dispatch(
     mut p: *const xed_decoded_inst_t,
 ) -> libc::c_uint {
-    return (xed_inst_iform_enum((*p)._inst) as libc::c_uint)
+    return (xed_inst_iform_enum((*p)._inst) as xed_uint_t)
         .wrapping_sub(xed_iform_first_per_iclass(xed_inst_iclass((*p)._inst)));
 }
 #[inline]
