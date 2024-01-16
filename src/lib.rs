@@ -90,7 +90,7 @@ mod _detail {
             };
 
             assert_eq!(
-                "Copyright (C) 2021, Intel Corporation. All rights reserved.",
+                "Copyright (C) 2022, Intel Corporation. All rights reserved.",
                 &copyright
             );
         }
