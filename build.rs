@@ -100,10 +100,6 @@ fn build_xed() {
         cmd.arg("--opt=0");
     }
 
-    if cfg!(feature = "enc2") {
-        cmd.arg("--enc2");
-    }
-
     eprintln!("XED build command: {:?}", cmd);
 
     let status = cmd.status().expect("Failed to start xed build");

@@ -6,10 +6,6 @@
 //!
 //! # Features
 //!
-//! - `enc2` - Enable the [fast XED encoder][1]. Note that enabling this feature
-//!   results in XED generating a rather large amount of code and the resulting
-//!   bindgen bindings are over 40MB in size. Expect 5+ minute compile times
-//!   when enabling this option.
 //! - `bindgen` - Don't use the bundled bindings files and instead regenerate
 //!   rust bindings from scratch at compile time. You should never need to
 //!   enable this manually but it will be enabled by other features.
