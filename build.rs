@@ -14,50 +14,6 @@ fn create_dir<P: AsRef<Path>>(path: P) -> io::Result<()> {
     })
 }
 
-/// Autogenerates bindings
-fn build_bindings(cwd: &Path) {
-    let out_dir = PathBuf::from(env::var("OUT_DIR").unwrap());
-    let include_dir = out_dir.join("install/include");
-
-    let dot_h = cwd.join("xed.h");
-    let dot_rs = out_dir.join("xed_interface.rs");
-
-    eprintln!("{}", cwd.display());
-
-    let builder = bindgen::Builder::default()
-        .clang_arg(format!("--include-directory={}", include_dir.display()))
-        .clang_arg("-DXED_ENCODER")
-        .clang_arg("-DXED_DECODER")
-        .allowlist_type("xed3?_.*")
-        .allowlist_function("(str2)?xed3?_.*")
-        .allowlist_function("xed_isa_set_is_valid_for_chip")
-        .allowlist_var("(XED|xed)_.*")
-        .header(format!("{}", dot_h.display()))
-        .impl_debug(true)
-        .derive_copy(true)
-        .derive_debug(true)
-        .prepend_enum_name(false);
-
-    builder.dump_preprocessed_input().unwrap();
-
-    let bindings = match builder.generate() {
-        Ok(x) => x,
-        Err(e) => panic!(
-            "Could not generate bindings for {}. Error {:?}",
-            dot_h.display(),
-            e
-        ),
-    };
-    match bindings.write_to_file(&dot_rs) {
-        Ok(_) => {}
-        Err(e) => panic!(
-            "Could not write generated bindings to {}. Error {:?}",
-            dot_rs.display(),
-            e
-        ),
-    };
-}
-
 fn find_python() -> Command {
     // Check for pylauncher first since it is the most accurate way to get the
     // newest version of python.
@@ -91,11 +47,9 @@ fn find_python() -> Command {
     panic!("Unable to find a working python installation. Tried `python3` and `python`.");
 }
 
-fn main() {
+fn build_xed() {
     println!("cargo:rerun-if-changed=xed/VERSION");
     println!("cargo:rerun-if-changed=build.rs");
-    println!("cargo:rerun-if-changed-env=OUT_DIR");
-    println!("cargo:rerun-if-changed-env=TARGET");
     println!("cargo:rerun-if-changed-env=PROFILE");
 
     let out_dir = PathBuf::from(env::var("OUT_DIR").expect("Failed to read OUT_DIR"));
@@ -115,18 +69,18 @@ fn main() {
     // Set locale to C to avoid user language settings interference
     env::set_var("LC_ALL", "C");
 
-    env::set_current_dir(&build_dir).unwrap();
-
     let num_jobs: u32 = env::var("NUM_JOBS")
         .unwrap_or_else(|_| "1".to_owned())
         .parse()
         .unwrap_or(1);
 
     let mut cmd = find_python();
-    cmd
+    cmd.env("PYTHONDONTWRITEBYTECODE", "x")
+        .current_dir(&build_dir)
         // The -B flag prevents python from generating .pyc files
         .arg("-B")
         .arg(&mfile_path)
+        .arg("install")
         .arg(format!("--jobs={}", num_jobs))
         .arg("--silent")
         .arg("--static-stripped")
@@ -138,8 +92,7 @@ fn main() {
                 .expect("TARGET was not a valid target triple")
                 .architecture
         ))
-        .arg(format!("--install-dir={}", install_dir.display()))
-        .env("PYTHONDONTWRITEBYTECODE", "x");
+        .arg(format!("--install-dir={}", install_dir.display()));
 
     if profile == "release" {
         cmd.arg("--opt=3");
@@ -147,7 +100,9 @@ fn main() {
         cmd.arg("--opt=0");
     }
 
-    cmd.arg("install").current_dir(&build_dir);
+    if cfg!(feature = "enc2") {
+        cmd.arg("--enc2");
+    }
 
     eprintln!("XED build command: {:?}", cmd);
 
@@ -161,7 +116,66 @@ fn main() {
 
     println!("cargo:rustc-link-search=native={}", lib_dir.display());
     println!("cargo:rustc-link-lib=static=xed");
+}
 
-    // Generate bindings
-    build_bindings(&cwd);
+fn build_inline_shim() {
+    let cwd = std::env::current_dir().unwrap();
+    let out_dir = PathBuf::from(env::var("OUT_DIR").expect("Failed to read OUT_DIR"));
+
+    let mut cc = cc::Build::new();
+    cc.include(out_dir.join("install/include"))
+        .include(&cwd)
+        // xed-static.c contains an instance of this. It's not an error and we
+        // don't want to be modifying generated files so just silence the warning.
+        .flag_if_supported("-Wno-duplicate-decl-specifier");
+
+    if cfg!(feature = "bindgen") {
+        cc.file(out_dir.join("xed-static.c"));
+    } else {
+        cc.file("src/xed-static.c");
+    }
+
+    cc.compile("xed-shim");
+}
+
+#[cfg(feature = "bindgen")]
+fn build_bindgen() {
+    let out_dir = PathBuf::from(env::var("OUT_DIR").expect("Failed to read OUT_DIR"));
+
+    let dot_rs = out_dir.join("xed.rs");
+
+    let builder = bindgen::builder()
+        .clang_arg("-I")
+        .clang_arg(out_dir.join("install/include").display().to_string())
+        .allowlist_type("xed3?_.*")
+        .allowlist_function("(str2)?xed3?_.*")
+        .allowlist_var("(XED|xed)_.*")
+        .blocklist_item("XED_.*_DEFINED")
+        .prepend_enum_name(false)
+        .impl_debug(true)
+        .use_core()
+        .wrap_static_fns(true)
+        .wrap_static_fns_path(out_dir.join("xed-static.c"))
+        .wrap_static_fns_suffix("_xed_sys_inline");
+
+    let bindings = builder
+        .header("xed.h")
+        .generate()
+        .unwrap_or_else(|e| panic!("Could not generate bindings for xed.h: {}", e));
+
+    bindings.write_to_file(&dot_rs).unwrap_or_else(|e| {
+        panic!(
+            "Could not write generated bindings to {}: {e}",
+            dot_rs.display()
+        )
+    });
+}
+
+fn main() {
+    build_xed();
+
+    #[cfg(feature = "bindgen")]
+    build_bindgen();
+
+    build_inline_shim();
 }
