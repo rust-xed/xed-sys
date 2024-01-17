@@ -35,8 +35,11 @@ fn main() {
 ## Building
 
 In order to build this crate, you need:
-* Python version 2.7, 3.4 or later ([to build XED](https://intelxed.github.io/build-manual/)).
-* clang ([to build XED](https://intelxed.github.io/build-manual/) and [run bindgen](https://rust-lang.github.io/rust-bindgen/requirements.html#requirements)).
+* Python version 3.8 or later ([to build XED](https://intelxed.github.io/build-manual/)).
+* A C compiler.
+
+If you have the `bindgen` feature enabled then you will also need:
+* clang [to run bindgen](https://rust-lang.github.io/rust-bindgen/requirements.html#requirements).
 
 ## Examples
 You can find usage examples in the examples/ directory.
