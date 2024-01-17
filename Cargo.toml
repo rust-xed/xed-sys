@@ -11,10 +11,6 @@ keywords = ["xed", "intel", "x86", "x86_64"]
 categories = ["encoding", "external-ffi-bindings", "hardware-support", "parsing", "no_std"]
 rust-version = "1.64"
 
-[badges]
-appveyor  = { repository = "rust-xed/xed-sys" }
-travis-ci = { repository = "rust-xed/xed-sys" }
-
 [features]
 # Generate bindings with bindgen at build-time instead of using the
 # pregenerated bindings.
