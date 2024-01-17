@@ -8,7 +8,7 @@ edition = "2018"
 repository = "https://github.com/rust-xed/xed-sys"
 readme = "README.md"
 keywords = ["xed", "intel", "x86", "x86_64"]
-categories = ["encoding", "external-ffi-bindings", "hardware-support", "parsing", "no_std"]
+categories = ["encoding", "external-ffi-bindings", "hardware-support", "parsing"]
 rust-version = "1.64"
 
 [badges]
