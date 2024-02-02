@@ -1,6 +1,6 @@
-[![Build Status](https://travis-ci.com/Phantomical/xed-sys.svg?branch=master)](https://travis-ci.com/Phantomical/xed-sys)
-[![Build status](https://ci.appveyor.com/api/projects/status/u6krc5mee7sdjn7a/branch/master?svg=true)](https://ci.appveyor.com/project/Phantomical/xed-sys/branch/master)
-[![Crates.io](https://img.shields.io/crates/v/xed-sys.svg)](https://crates.io/crates/xed-sys)
+[![Build Status](https://github.com/rust-xed/xed-sys/actions/workflows/build-and-test.yml/badge.svg)](https://github.com/rust-xed/xed-sys/actions/workflows/build-and-test.yml)
+[![docs.rs](https://img.shields.io/docsrs/xed-sys)](https://docs.rs/xed-sys)
+[![crates.io](https://img.shields.io/crates/v/xed-sys.svg)](https://crates.io/crates/xed-sys)
 
 # xed-sys
 Rust FFI bindings for [Intel XED](https://intelxed.github.io/).
@@ -35,8 +35,11 @@ fn main() {
 ## Building
 
 In order to build this crate, you need:
-* Python version 2.7, 3.4 or later ([to build XED](https://intelxed.github.io/build-manual/)).
-* clang ([to build XED](https://intelxed.github.io/build-manual/) and [run bindgen](https://rust-lang.github.io/rust-bindgen/requirements.html#requirements)).
+* Python version 3.8 or later ([to build XED](https://intelxed.github.io/build-manual/)).
+* A C compiler.
+
+If you have the `bindgen` feature enabled then you will also need:
+* clang [to run bindgen](https://rust-lang.github.io/rust-bindgen/requirements.html#requirements).
 
 ## Examples
 You can find usage examples in the examples/ directory.
