@@ -12,15 +12,11 @@ jobs:
   build_and_test:
     name: xed-rs
     runs-on: ${{ matrix.os }}
-    continue-on-error: ${{ matrix.experimental }}
+    continue-on-error: ${{ matrix.toolchain == 'nightly' }}
     strategy:
       matrix:
         os: [ubuntu-latest, windows-2019]
-        toolchain: [stable, beta]
-        experimental: [false]
-        include:
-          - toolchain: nightly
-            experimental: true
+        toolchain: [stable, beta, nightly]
     env:
       MSVS_VERSION: 16
     steps:
