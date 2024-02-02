@@ -7,7 +7,7 @@ on:
       - dependabot/**
   pull_request:
 
-name: ci-linux
+name: ci
 
 jobs:
   build_and_test:
