@@ -139,7 +139,10 @@ fn build_xed(_cc: &cc::Build) {
         ($variant:literal) => {
             if cfg!(feature = $variant) {
                 println!("cargo:rustc-link-lib={linkty}=xed-{}", $variant);
-                println!("cargo:rustc-link-lib={linkty}=xed-chk-{}", $variant);
+
+                if cfg!(feature = "enc2-chk") {
+                    println!("cargo:rustc-link-lib={linkty}=xed-chk-{}", $variant);
+                }
             }
         };
     }
@@ -176,6 +179,10 @@ fn build_inline_shim(mut cc: cc::Build) {
     cfg_define_enc2!("enc2-m32-a32");
     cfg_define_enc2!("enc2-m64-a64");
 
+    if cfg!(feature = "enc2-chk") {
+        cc.define("XED_SYS_ENC2_CHK", None);
+    }
+
     if cfg!(feature = "dylib") {
         cc.define("XED_DLL", None);
     }
@@ -195,7 +202,7 @@ fn build_bindgen() {
 
     let dot_rs = out_dir.join("xed.rs");
 
-    let builder = bindgen::builder()
+    let mut builder = bindgen::builder()
         .clang_arg("-I")
         .clang_arg(out_dir.join("install/include").display().to_string())
         .allowlist_type("xed3?_.*")
@@ -208,6 +215,22 @@ fn build_bindgen() {
         .wrap_static_fns(true)
         .wrap_static_fns_path(out_dir.join("xed-static.c"))
         .wrap_static_fns_suffix("_xed_sys_inline");
+
+    if cfg!(feater = "dylib") {
+        builder = builder.clang_arg("-DXED_DLL");
+    }
+
+    if cfg!(feature = "enc2-m32-a32") {
+        builder = builder.clang_arg("-DXED_SYS_ENC2_M32_A32");
+    }
+
+    if cfg!(feature = "enc2-m64-a64") {
+        builder = builder.clang_arg("-DXED_SYS_ENC2_M64_A64");
+    }
+
+    if cfg!(feature = "enc2-chk") {
+        builder = builder.clang_arg("-DXED_SYS_ENC2_CHK");
+    }
 
     let bindings = builder
         .header("xed.h")

@@ -21,6 +21,9 @@ rust-version = "1.64"
 enc2-m32-a32 = ["bindgen", "_internal-enc2"]
 enc2-m64-a64 = ["bindgen", "_internal-enc2"]
 
+# Enable the checked variants for the enc2 module of XED.
+enc2-chk = ["bindgen", "_internal-enc2"]
+
 # Generate bindings with bindgen at build-time instead of using the
 # pregenerated bindings.
 #

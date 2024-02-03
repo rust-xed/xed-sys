@@ -20,11 +20,15 @@
 //!
 //! The generated static libraries also unfortunately have some duplicate
 //! symbols so attempting to link both will result in linker errors. To make
-//! the error less confusing this library will fail to compile if multiple
-//! `enc2` features are enabled.
+//! the error less confusing this library will fail to compile if both
+//! `enc2-m64-a64` and `enc2-m32-a32` are enabled and the `dylib` feature is
+//! not enabled.
 //!
 //! - `enc2-m64-a64` - Enable enc2 for 64-bit mode with 64-bit addresses.
 //! - `enc2-m32-a32` - Enable enc2 for 32-bit mode with 32-bit addresses.
+//! - `enc2-chk` - Enable checked variants of the of the enc2 functions. Note
+//!   that this feature does nothing unless you have enabled one of the other
+//!   enc2 features.
 //!
 //! [0]: crate::xed_tables_init
 //! [1]: https://github.com/intelxed/xed/wiki/The-fast-encoder---enc2
