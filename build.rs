@@ -5,7 +5,7 @@ use std::{
     str::FromStr,
 };
 
-use target_lexicon::Triple;
+use target_lexicon::{OperatingSystem, Triple};
 
 fn create_dir<P: AsRef<Path>>(path: P) -> io::Result<()> {
     fs::create_dir(path).or_else(|e| match e.kind() {
@@ -61,6 +61,8 @@ fn build_xed(_cc: &cc::Build) {
         _ => false,
     };
 
+    let triple = Triple::from_str(&target).expect("TARGET was not a valid target triple");
+
     let install_dir = out_dir.join("install");
     let build_dir = out_dir.join("build");
     let mfile_path = cwd.join("xed/mfile.py");
@@ -88,12 +90,7 @@ fn build_xed(_cc: &cc::Build) {
         .arg(format!("--jobs={}", num_jobs))
         .arg("--extra-ccflags=-fPIC")
         .arg("--no-werror")
-        .arg(format!(
-            "--host-cpu={}",
-            Triple::from_str(&target)
-                .expect("TARGET was not a valid target triple")
-                .architecture
-        ))
+        .arg(format!("--host-cpu={}", triple.architecture))
         .arg(format!("--install-dir={}", install_dir.display()));
 
     if cfg!(feature = "dylib") {
@@ -125,6 +122,7 @@ fn build_xed(_cc: &cc::Build) {
     }
 
     let lib_dir = install_dir.join("lib");
+    let bin_dir = install_dir.join("bin");
     let linkty = match cfg!(feature = "dylib") {
         true => "dylib",
         false => "static",
@@ -132,6 +130,10 @@ fn build_xed(_cc: &cc::Build) {
 
     println!("cargo:rustc-link-search=native={}", lib_dir.display());
     println!("cargo:rustc-link-lib={linkty}=xed");
+
+    if triple.operating_system == OperatingSystem::Windows {
+        println!("cargo:rustc-link-search=native={}", bin_dir.display());
+    }
 
     macro_rules! cfg_link_enc2 {
         ($variant:literal) => {
