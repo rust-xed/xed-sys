@@ -47,7 +47,7 @@ fn find_python() -> Command {
     panic!("Unable to find a working python installation. Tried `python3` and `python`.");
 }
 
-fn build_xed() {
+fn build_xed(_cc: &cc::Build) {
     println!("cargo:rerun-if-changed=xed/VERSION");
     println!("cargo:rerun-if-changed=build.rs");
     println!("cargo:rerun-if-changed-env=PROFILE");
@@ -82,7 +82,7 @@ fn build_xed() {
         .arg(&mfile_path)
         .arg("install")
         .arg(format!("--jobs={}", num_jobs))
-        .arg("--silent")
+        // .arg("--silent")
         .arg("--static-stripped")
         .arg("--extra-ccflags=-fPIC")
         .arg("--no-werror")
@@ -100,7 +100,7 @@ fn build_xed() {
         cmd.arg("--opt=0");
     }
 
-    if cfg!(feature = "enc2") {
+    if cfg!(feature = "_internal-enc2") {
         cmd.arg("--enc2");
     }
 
@@ -117,24 +117,42 @@ fn build_xed() {
     println!("cargo:rustc-link-search=native={}", lib_dir.display());
     println!("cargo:rustc-link-lib=static=xed");
 
-    if cfg!(feature = "enc2") {
-        println!("cargo:rustc-link-lib=static=xed-enc2-m32-a32");
-        println!("cargo:rustc-link-lib=static=xed-enc2-m64-a64");
-        println!("cargo:rustc-link-lib=static=xed-chk-enc2-m32-a32");
-        println!("cargo:rustc-link-lib=static=xed-chk-enc2-m64-a64");
+    macro_rules! cfg_link_enc2 {
+        ($variant:literal) => {
+            if cfg!(feature = $variant) {
+                println!("cargo:rustc-link-lib=static=xed-{}", $variant);
+                println!("cargo:rustc-link-lib=static=xed-chk-{}", $variant);
+            }
+        };
     }
-}
 
-fn build_inline_shim() {
+    cfg_link_enc2!("enc2-m32-a32");
+    cfg_link_enc2!("enc2-m64-a64");
+
+    #[cfg(all(feature = "enc2-m32-a32", feature = "enc2-m64-a64"))]
+    compile_error!("Cannot enable both `enc2-m32-a32` and `enc2-m64-a64` features");
+}
+fn build_inline_shim(mut cc: cc::Build) {
     let cwd = std::env::current_dir().unwrap();
     let out_dir = PathBuf::from(env::var("OUT_DIR").expect("Failed to read OUT_DIR"));
 
-    let mut cc = cc::Build::new();
     cc.include(out_dir.join("install/include"))
         .include(&cwd)
         // xed-static.c contains an instance of this. It's not an error and we
         // don't want to be modifying generated files so just silence the warning.
         .flag_if_supported("-Wno-duplicate-decl-specifier");
+
+    macro_rules! cfg_define_enc2 {
+        ($variant:literal) => {
+            if cfg!(feature = $variant) {
+                let def = $variant.replace('-', "_").to_ascii_uppercase();
+                cc.define(&format!("XED_SYS_{def}"), None);
+            }
+        };
+    }
+
+    cfg_define_enc2!("enc2-m32-a32");
+    cfg_define_enc2!("enc2-m64-a64");
 
     if cfg!(feature = "bindgen") {
         cc.file(out_dir.join("xed-static.c"));
@@ -179,10 +197,9 @@ fn build_bindgen() {
 }
 
 fn main() {
-    build_xed();
-
+    let cc = cc::Build::new();
+    build_xed(&cc);
     #[cfg(feature = "bindgen")]
     build_bindgen();
-
-    build_inline_shim();
+    build_inline_shim(cc);
 }

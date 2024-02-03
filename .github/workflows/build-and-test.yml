@@ -30,4 +30,5 @@ jobs:
       - uses: Swatinem/rust-cache@v2
 
       - run: cargo test
-      - run: cargo test --all-features
+      - run: cargo test --features enc2-m32-a32
+      - run: cargo test --features enc2-m64-a64

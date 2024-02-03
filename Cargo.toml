@@ -17,16 +17,23 @@ travis-ci = { repository = "rust-xed/xed-sys" }
 [features]
 # Enable the enc2 module of XED.
 #
-# Note that this will somewhat dramatically slow down compilation of xed-sys.
-# The enc2 module involves a large amount of generated code and the resulting
-# bindgen definitions contain 40+MB of rust code.
-enc2 = ["bindgen"]
+# Each feature enables a version of enc2 for a different module and operand
+# size. Note that attempting to enable multiple enc2 feature variants is not
+# supported and will result in a compile error (instead of the link error it
+# would normally emit).
+enc2-m32-a32 = ["bindgen", "_internal-enc2"]
+enc2-m64-a64 = ["bindgen", "_internal-enc2"]
 
 # Generate bindings with bindgen at build-time instead of using the
 # pregenerated bindings.
 #
 # This will be slower but is required for certain feature combinations.
 bindgen = ["dep:bindgen"]
+
+# Build xed with the enc2.
+#
+# This is an internal feature and you do not need to enable it manually.
+_internal-enc2 = []
 
 [dependencies]
 
