@@ -30,6 +30,8 @@ enc2-m64-a64 = ["bindgen", "_internal-enc2"]
 # This will be slower but is required for certain feature combinations.
 bindgen = ["dep:bindgen"]
 
+dylib = []
+
 # Build xed with the enc2.
 #
 # This is an internal feature and you do not need to enable it manually.

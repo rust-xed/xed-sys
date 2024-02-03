@@ -56,6 +56,10 @@ fn build_xed(_cc: &cc::Build) {
     let cwd = env::current_dir().expect("Failed to get CWD");
     let target = env::var("TARGET").expect("Failed to read TARGET");
     let profile = env::var("PROFILE").unwrap_or_else(|_| "debug".to_owned());
+    let debug = match env::var("DEBUG") {
+        Ok(var) => var != "false",
+        _ => false,
+    };
 
     let install_dir = out_dir.join("install");
     let build_dir = out_dir.join("build");
@@ -82,8 +86,6 @@ fn build_xed(_cc: &cc::Build) {
         .arg(&mfile_path)
         .arg("install")
         .arg(format!("--jobs={}", num_jobs))
-        // .arg("--silent")
-        .arg("--static-stripped")
         .arg("--extra-ccflags=-fPIC")
         .arg("--no-werror")
         .arg(format!(
@@ -93,6 +95,16 @@ fn build_xed(_cc: &cc::Build) {
                 .architecture
         ))
         .arg(format!("--install-dir={}", install_dir.display()));
+
+    if cfg!(feature = "dylib") {
+        cmd.arg("--shared");
+    } else {
+        cmd.arg("--static-stripped");
+    }
+
+    if debug {
+        cmd.arg("--debug");
+    }
 
     if profile == "release" {
         cmd.arg("--opt=3");
@@ -113,15 +125,19 @@ fn build_xed(_cc: &cc::Build) {
     }
 
     let lib_dir = install_dir.join("lib");
+    let linkty = match cfg!(feature = "dylib") {
+        true => "dylib",
+        false => "static",
+    };
 
     println!("cargo:rustc-link-search=native={}", lib_dir.display());
-    println!("cargo:rustc-link-lib=static=xed");
+    println!("cargo:rustc-link-lib={linkty}=xed");
 
     macro_rules! cfg_link_enc2 {
         ($variant:literal) => {
             if cfg!(feature = $variant) {
-                println!("cargo:rustc-link-lib=static=xed-{}", $variant);
-                println!("cargo:rustc-link-lib=static=xed-chk-{}", $variant);
+                println!("cargo:rustc-link-lib={linkty}=xed-{}", $variant);
+                println!("cargo:rustc-link-lib={linkty}=xed-chk-{}", $variant);
             }
         };
     }
@@ -129,8 +145,12 @@ fn build_xed(_cc: &cc::Build) {
     cfg_link_enc2!("enc2-m32-a32");
     cfg_link_enc2!("enc2-m64-a64");
 
+    #[cfg(not(feature = "dylib"))]
     #[cfg(all(feature = "enc2-m32-a32", feature = "enc2-m64-a64"))]
-    compile_error!("Cannot enable both `enc2-m32-a32` and `enc2-m64-a64` features");
+    compile_error!(concat!(
+        "Cannot enable both `enc2-m32-a32` and `enc2-m64-a64` features when linking statically.",
+        "You can avoid this by enabling the `dylib` feature to build these as dylibs."
+    ));
 }
 fn build_inline_shim(mut cc: cc::Build) {
     let cwd = std::env::current_dir().unwrap();
@@ -153,6 +173,10 @@ fn build_inline_shim(mut cc: cc::Build) {
 
     cfg_define_enc2!("enc2-m32-a32");
     cfg_define_enc2!("enc2-m64-a64");
+
+    if cfg!(feature = "dylib") {
+        cc.define("XED_DLL", None);
+    }
 
     if cfg!(feature = "bindgen") {
         cc.file(out_dir.join("xed-static.c"));

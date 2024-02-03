@@ -8,6 +8,9 @@
 //! - `bindgen` - Don't use the bundled bindings files and instead regenerate
 //!   rust bindings from scratch at compile time. You should never need to
 //!   enable this manually but it will be enabled by other features.
+//! - `dylib` - Link XED (and `enc2` libraries if enabled) dynamically. This
+//!   allows you to work around the link errors that prevent you from linking
+//!   both enc2 libraries statically.
 //!
 //! ## `enc2`
 //! XED has the option to enable its [`enc2`][1] encoder. This contains a
