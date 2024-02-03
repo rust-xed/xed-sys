@@ -1,6 +1,6 @@
 [package]
 name = "xed-sys"
-version = "0.4.0"
+version = "0.5.0+xed-2023.12.19"
 authors = ["Phantomical", "Agustin Godnic"]
 license = "Apache-2.0"
 description = "Rust FFI bindings for Intel XED."
@@ -8,11 +8,8 @@ edition = "2018"
 repository = "https://github.com/rust-xed/xed-sys"
 readme = "README.md"
 keywords = ["xed", "intel", "x86", "x86_64"]
-categories = ["encoding", "external-ffi-bindings", "hardware-support", "parsing", "no_std"]
-
-[badges]
-appveyor = { repository = "rust-xed/xed-sys" }
-travis-ci = { repository = "rust-xed/xed-sys" }
+categories = ["encoding", "external-ffi-bindings", "hardware-support", "parsing"]
+rust-version = "1.64"
 
 [features]
 # Enable the enc2 module of XED.
