@@ -15,6 +15,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     continue-on-error: ${{ matrix.toolchain == 'nightly' }}
     strategy:
+      fail-fast: false
       matrix:
         toolchain: [stable, beta, nightly]
         os:
