@@ -1,6 +1,6 @@
 [package]
 name = "xed-sys"
-version = "0.5.1+xed-2023.12.19"
+version = "0.6.0+xed-2024.05.20"
 authors = ["Phantomical", "Agustin Godnic"]
 license = "Apache-2.0"
 description = "Rust FFI bindings for Intel XED."
