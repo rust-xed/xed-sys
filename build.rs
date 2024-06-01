@@ -51,6 +51,7 @@ fn build_xed() {
     println!("cargo:rerun-if-changed=xed/VERSION");
     println!("cargo:rerun-if-changed=build.rs");
     println!("cargo:rerun-if-changed-env=PROFILE");
+    println!("cargo:rerun-if-changed-env=CROSS_TOOLCHAIN_PREFIX");
 
     let out_dir = PathBuf::from(env::var("OUT_DIR").expect("Failed to read OUT_DIR"));
     let cwd = env::current_dir().expect("Failed to get CWD");
@@ -93,6 +94,10 @@ fn build_xed() {
                 .architecture
         ))
         .arg(format!("--install-dir={}", install_dir.display()));
+
+    if let Ok(toolchain) = env::var("CROSS_TOOLCHAIN_PREFIX") {
+        cmd.arg(format!("--toolchain={toolchain}"));
+    }
 
     if profile == "release" {
         cmd.arg("--opt=3");
