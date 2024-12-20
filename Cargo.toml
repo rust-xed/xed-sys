@@ -23,4 +23,4 @@ bindgen = ["dep:bindgen"]
 [build-dependencies]
 bindgen = { version = "0.71", optional = true, features = ["experimental"] }
 cc = "1.0"
-target-lexicon = "0.12"
+target-lexicon = "0.13"
